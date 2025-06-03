@@ -1,0 +1,174 @@
+{{ header }}{{ column_left }}
+<div id="content" class="mp-content">
+  <div class="container-fluid">
+    <div class="page-header">
+      <h1>{{ heading_title }}</h1>
+      <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+          <li class="breadcrumb-item"><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="container-fluid">
+    {% if error_warning %}
+    <div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    {% endif %}
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3>
+        <div class="pull-right">
+          <button type="submit" form="form-xmas_snow_flake" class="btn btn-primary"><i class="fa fa-save"></i> {{ button_save }}</button>
+          <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-warning"><i class="fa fa-times"></i> {{ button_cancel }}</a>
+        </div>
+      </div>
+      <div class="panel-body">
+        <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-xmas_snow_flake" class="form-horizontal">
+          <!--ul class="nav nav-tabs">
+            <li class="active"><a href="#tab-general" data-toggle="tab"><i class="fa fa-cogs" aria-hidden="true"></i> {{ tab_general }}</a></li>
+            <li><a href="#tab-support" data-toggle="tab"><i class="fa fa-external-link" aria-hidden="true"></i> {{ tab_support }}</a></li>
+          </ul-->
+          <div class="tab-content">
+            <div class="tab-pane active" id="tab-general">
+              <div class="form-group mp-buttons">
+                <label class="col-sm-2 control-label" for="entry-status">{{ entry_status }}</label>
+                <div class="col-sm-3">
+                  <div id="entry-status" class="btn-group btn-group-justified" data-toggle="buttons">
+                    <label for="input-status-1" class="btn btn-primary {{ module_xmas_snow_flake_status ? 'active' : '' }}">{{ text_enabled }} <input type="radio" name="module_xmas_snow_flake_status" value="1" {% if module_xmas_snow_flake_status %}checked="checked"{% endif %} class="btn-check" id="input-status-1" /></label>
+
+                    <label for="input-status-0" class="btn btn-primary {{ not module_xmas_snow_flake_status ? 'active' : '' }}">{{ text_disabled }} <input type="radio" name="module_xmas_snow_flake_status" value="0" {% if not module_xmas_snow_flake_status %}checked="checked"{% endif %} class="btn-check" id="input-status-0" /></label>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-color">{{ entry_color }}</label>
+                <div class="col-sm-10">
+                  <div class="input-group">
+                    <input type="text" name="module_xmas_snow_flake_color" value="{{ module_xmas_snow_flake_color }}" placeholder="{{ entry_color }}" id="input-color" class="form-control colorpickers" />
+                    <div class="input-group-addon preview" style="width: 40px;height: 36px;"></div>
+                  </div>
+                  <div class="help">{{ help_color }}</div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-icon">{{ entry_icon }}</label>
+                <div class="col-sm-10">
+                  <input type="text" name="module_xmas_snow_flake_icon" value="{{ module_xmas_snow_flake_icon }}" placeholder="{{ entry_icon }}" id="input-icon" class="form-control" />
+
+                  <div class="help">{{ help_icon }}</div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-intensity">{{ entry_intensity }}</label>
+                <div class="col-sm-10">
+                  <input type="text" name="module_xmas_snow_flake_intensity" value="{{ module_xmas_snow_flake_intensity }}" placeholder="{{ entry_intensity }}" id="input-intensity" class="form-control" />
+
+                  <div class="help">{{ help_intensity }}</div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-size">{{ entry_size }}</label>
+                <div class="col-sm-10">
+                  <div class="row">
+                    <div class="col-sm-6"><label for="input-sizemin">{{ text_min }}</label><input type="text" name="module_xmas_snow_flake_sizemin" value="{{ module_xmas_snow_flake_sizemin }}" placeholder="{{ entry_size }} {{ text_min }}" id="input-sizemin" class="form-control" /></div>
+                    <div class="col-sm-6"><label for="input-sizemax">{{ text_max }}</label><input type="text" name="module_xmas_snow_flake_sizemax" value="{{ module_xmas_snow_flake_sizemax }}" placeholder="{{ entry_size }} {{ text_max }}" id="input-sizemax" class="form-control" /></div>
+                  </div>
+                  <div class="help">{{ help_size }}</div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-opacity">{{ entry_opacity }}</label>
+                <div class="col-sm-10">
+                  <div class="row">
+                    <div class="col-sm-6"><label for="input-opacitymin">{{ text_min }}</label><input type="text" name="module_xmas_snow_flake_opacitymin" value="{{ module_xmas_snow_flake_opacitymin }}" placeholder="{{ entry_opacity }} {{ text_min }}" id="input-opacitymin" class="form-control" /></div>
+                    <div class="col-sm-6"><label for="input-opacitymax">{{ text_max }}</label><input type="text" name="module_xmas_snow_flake_opacitymax" value="{{ module_xmas_snow_flake_opacitymax }}" placeholder="{{ entry_opacity }} {{ text_max }}" id="input-opacitymax" class="form-control" /></div>
+                  </div>
+                  <div class="help">{{ help_opacity }}</div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-drift">{{ entry_drift }}</label>
+                <div class="col-sm-10">
+                  <div class="row">
+                    <div class="col-sm-6"><label for="input-driftmin">{{ text_min }}</label><input type="text" name="module_xmas_snow_flake_driftmin" value="{{ module_xmas_snow_flake_driftmin }}" placeholder="{{ entry_drift }} {{ text_min }}" id="input-driftmin" class="form-control" /></div>
+                    <div class="col-sm-6"><label for="input-driftmax">{{ text_max }}</label><input type="text" name="module_xmas_snow_flake_driftmax" value="{{ module_xmas_snow_flake_driftmax }}" placeholder="{{ entry_drift }} {{ text_max }}" id="input-driftmax" class="form-control" /></div>
+                  </div>
+                  <div class="help">{{ help_drift }}</div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-speed">{{ entry_speed }}</label>
+                <div class="col-sm-10">
+                  <div class="row">
+                    <div class="col-sm-6"><label for="input-speedmin">{{ text_min }}</label><input type="text" name="module_xmas_snow_flake_speedmin" value="{{ module_xmas_snow_flake_speedmin }}" placeholder="{{ entry_speed }} {{ text_min }}" id="input-speedmin" class="form-control" /></div>
+                    <div class="col-sm-6"><label for="input-speedmax">{{ text_max }}</label><input type="text" name="module_xmas_snow_flake_speedmax" value="{{ module_xmas_snow_flake_speedmax }}" placeholder="{{ entry_speed }} {{ text_max }}" id="input-speedmax" class="form-control" /></div>
+                  </div>
+                  <div class="help">{{ help_speed }}</div>
+                </div>
+              </div>
+            </div>
+            <!--div class="tab-pane" id="tab-support">
+              <div class="bs-callout bs-callout-info">
+                <h4>{{ heading_title }}</h4>
+              </div>
+              <fieldset>
+                <div class="form-group">
+                  <div class="col-md-12 col-xs-12">
+                    <h4 class="text-mpsuccess text-center"><i class="fa fa-thumbs-up"></i> Thanks For Choosing Our Extension</h4>
+                    <ul class="list-group">
+                      <li class="list-group-item clearfix">Installed Version <span class="badge"><i class="fa fa-code-branch"></i> V.1.0</span></li>
+                    </ul>
+                    <h4 class="text-mpsuccess text-center"><i class="fa fa-phone"></i> Please Contact Us In Case Any Issue OR Give Feedback!</h4>
+                    <ul class="list-group">
+                      <li class="list-group-item clearfix">support@modulepoints.com <span class="badge"><a href="mailto:support@modulepoints.com?Subject=Request Support: Quick Checkout Extension"><i class="fa fa-envelope"></i> Contact Us</a></span></li>
+                    </ul>
+                  </div>
+                </div>
+              </fieldset>
+            </div-->
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+
+$(function() {
+
+$('.colorpickers').ColorPicker({
+  curr : '',
+  onShow: function (colpkr) {
+    $(colpkr).fadeIn(500);
+    return false;
+  },
+  onHide: function (colpkr) {
+    $(colpkr).fadeOut(500);
+    return false;
+  },
+  onSubmit: function(hsb, hex, rgb, el) {
+    $(el).val(hex);
+    $(el).ColorPickerHide();
+  },
+  onBeforeShow: function () {
+    $(this).ColorPickerSetColor(this.value);
+  },onChange: function (hsb, hex, rgb) {
+    var $colorpicker = $(this).data('colorpicker');
+    var $el = $colorpicker.el;
+    $($el).parents().find('.preview').css('background', '#' + hex);
+    $($el).val(hex);
+  }
+})
+.bind('keyup', function(){
+  $(this).ColorPickerSetColor(this.value);
+})
+
+$.each($('.colorpickers'),function(key,value){
+  $(this).parent().find('.preview').css({'background':'#'+$(this).val()});
+});
+
+});
+</script>
+{{ footer }}

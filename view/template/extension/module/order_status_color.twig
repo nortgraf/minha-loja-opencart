@@ -1,0 +1,153 @@
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="pull-right">
+        <button type="submit" name="savetype" value="savechanges" form="form-order_status_color" data-toggle="tooltip" title="{{ button_savechanges }}" class="btn btn-success">{{ button_savechanges }}</button>
+        <button type="submit" form="form-order_status_color" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary">{{ button_save }}</button>
+        <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a></div>
+      <h1>{{ heading_title }}</h1>
+      <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+        <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="container-fluid">
+    {% if error_warning %}
+    <div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    {% endif %}
+		{% if success %}
+    <div class="alert alert-success"><i class="fa fa-check-circle"></i> {{ success }}
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    {% endif %}
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-list"></i> {{ text_edit }}</h3>
+			</div>
+      <div class="panel-body">
+        <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-order_status_color" class="form-horizontal">
+					<ul class="nav nav-tabs">
+						<li class="active"><a href="#tab-general" data-toggle="tab"><i class="fa fa-cogs" aria-hidden="true"></i> {{ tab_general }}</a></li>
+						<li><a href="#tab-color" data-toggle="tab"><i class="fa fa-list" aria-hidden="true"></i> {{ tab_color }}</a></li>
+						<!--li><a href="#tab-support" data-toggle="tab"><i class="fa fa-external-link" aria-hidden="true"></i> {{ tab_support }}</a></li-->
+					</ul>
+					<div class="tab-content">
+            <div class="tab-pane active" id="tab-general">
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-status">{{ entry_mstatus }}</label>
+								<div class="col-sm-10">
+									<select name="order_status_color_status" id="input-status" class="form-control">
+										{% if order_status_color_status %}
+										<option value="1" selected="selected">{{ text_enabled }}</option>
+										<option value="0">{{ text_disabled }}</option>
+										{% else %}
+										<option value="1">{{ text_enabled }}</option>
+										<option value="0" selected="selected">{{ text_disabled }}</option>
+										{% endif %}
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-display"><span data-toggle="tooltip" title="{{ help_display }}">{{ entry_display }}</span></label>
+								<div class="col-sm-10">
+									<div class="well well-sm" style="height: 150px; overflow: auto;">
+										<div class="checkbox"><label><input type="checkbox" name="order_status_color_display[]" value="dropdown" {{ (order_status_color_display is not empty and 'dropdown' in order_status_color_display) ? 'checked="checked"' : '' }} /> {{ text_dropdown }}</label></div>
+
+										<div class="checkbox"><label><input type="checkbox" name="order_status_color_display[]" value="admin_list" {{ (order_status_color_display is not empty and 'admin_list' in order_status_color_display) ? 'checked="checked"' : '' }} /> {{ text_admin_list }}</label></div>
+
+										<div class="checkbox"><label><input type="checkbox" name="order_status_color_display[]" value="checkbox" {{ (order_status_color_display is not empty and 'checkbox' in order_status_color_display) ? 'checked="checked"' : '' }} /> {{ text_checkbox }}</label></div>
+
+										<div class="checkbox"><label><input type="checkbox" name="order_status_color_display[]" value="front_list" {{ (order_status_color_display is not empty and 'front_list' in order_status_color_display) ? 'checked="checked"' : '' }} /> {{ text_front_list }}</label></div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="tab-pane" id="tab-color">
+							<div class="row">
+                <div class="col-sm-3">
+                  <ul class="nav nav-pills nav-stacked ostab" id="orderstatus">
+										{% for order_status in order_statuses %}
+										<li><a href="#tab-status{{ order_status.order_status_id }}" data-toggle="tab">{{ order_status.name }}</a></li>
+										{% endfor %}
+									</ul>
+								</div>
+								<div class="col-sm-9">
+									<div class="tab-content">
+                    {% for order_status in order_statuses %}
+                    <div class="tab-pane" id="tab-status{{ order_status.order_status_id }}">
+											<!-- // mps -->
+											<div class="form-group">
+												<label class="col-sm-2 control-label">{{ entry_background_color }}</label>
+												<div class="col-sm-3">
+													<div class="input-group colorpicker colorpicker-component">
+														<input type="text" name="order_status_color_picker[{{ order_status.order_status_id }}][background_color]" value="{{ (order_status_color_picker[order_status.order_status_id].background_color) ? order_status_color_picker[order_status.order_status_id].background_color : '' }}" class="form-control" />
+														<span class="input-group-addon"><i></i></span>
+													</div>
+												</div>
+											</div>
+											<div class="form-group">
+												<label class="col-sm-2 control-label">{{ entry_font_color }}</label>
+												<div class="col-sm-3">
+													<div class="input-group colorpicker colorpicker-component">
+														<input type="text" name="order_status_color_picker[{{ order_status.order_status_id }}][font_color]" value="{{ (order_status_color_picker[order_status.order_status_id].font_color) ? order_status_color_picker[order_status.order_status_id].font_color : '' }}" class="form-control" />
+														<span class="input-group-addon"><i></i></span>
+													</div>
+												</div>
+											</div>
+											<!-- // mpe -->
+										</div>
+										{% endfor %}
+									</div>
+								</div>
+							</div>
+						</div>
+						<!--div class="tab-pane" id="tab-support">
+							<fieldset>
+								<div class="form-group">
+									<div class="col-md-12 col-xs-12">
+										<h4 class="text-mpsuccess text-center"><i class="fa fa-thumbs-up" aria-hidden="true"></i> Thanks For Choosing Our Extension</h4>
+										 <ul class="list-group">
+											<li class="list-group-item clearfix">Installed Version <span class="badge"><i class="fa fa-gg" aria-hidden="true"></i> V.1.0</span></li>
+											<li class="list-group-item clearfix">Latest Version <span class="badge"><a  target="_blank" href="https://www.opencart.com/index.php?route=marketplace/extension/info&extension_id=28123"><i class="fa fa-refresh" aria-hidden="true"></i> Check</a></span></li>
+											<li class="list-group-item clearfix">Get More Our Extensions On Opencart Market Place<span class="badge"><a target="_blank" href="https://www.opencart.com/index.php?route=marketplace/extension&filter_member=modulepoints"><i class="fa fa-opencart"></i> Click Here</a></span></li>
+										</ul>
+										<h4 class="text-mpsuccess text-center"><i class="fa fa-phone" aria-hidden="true"></i> Please Contact Us In Case Any Issue And Give Feedback!</h4>
+										<ul class="list-group">
+											<li class="list-group-item clearfix">support@modulepoints.com <span class="badge"><a href="mailto:support@modulepoints.com"><i class="fa fa-envelope"></i> Contact Us</a></span></li>
+										</ul>
+									</div>
+								</div>
+							</fieldset>
+						</div-->
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript"><!--
+$('#orderstatus a:first').tab('show');
+//--></script>
+<link href="view/javascript/jquery/colorpicker/css/bootstrap-colorpicker.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="view/javascript/jquery/colorpicker/js/bootstrap-colorpicker.js"></script>
+<script> $(function() { $('.colorpicker').colorpicker(); }); </script>
+<style>
+.form-group {padding-top: 8px;}
+.ostab{background: #f0f1f5; border:1px solid #ddd; padding: 10px;}
+.ostab li{border:1px solid #ddd;background: #e4e6ea;margin-top: 4px;margin-bottom: 4px;}
+.ostab li.active{border:none;}
+.ostab li a{color: #000;padding: 12px;}
+.codes .btn-primary{position: absolute; right: 15px; top: -26px; padding: 3px 10px;}
+#tab-support .fa-thumbs-up{ font-size: 30px; margin-right: 5px; }
+#tab-support .list-group-item > .badge a{ color:#fff; }
+#tab-support .text-success{ color: #538d15; }
+.card-block{padding:10px 15px; margin:2px;}
+.text-mpsuccess { color: #184ec5; font-weight: 600; }
+.badge { background-color: #184ec5; padding: 7px 15px; border-radius: 4px; -webkit-border-radius: 4px; font-weight: normal; }
+</style>
+{{ footer }}

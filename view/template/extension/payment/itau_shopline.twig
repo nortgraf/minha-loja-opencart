@@ -1,0 +1,822 @@
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="pull-right">
+        <button type="submit" form="form-payment" input type="hidden" id="save_stay" name="save_stay" value="1" data-toggle="tooltip" title="{{ button_save_stay }}" class="btn btn-success"><i class="fa fa-save"></i></button>
+        <button type="submit" form="form-payment" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+        <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a>
+      </div>
+      <h1>{{ heading_title }}</h1> <span class="badge">{{ versao }}</span>
+      <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+        <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="container-fluid">
+    {% if error_warning %}
+    <div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}</div>
+    {% endif %}
+    {% if success %}
+    <div class="alert alert-success"><i class="fa fa-check-circle"></i> {{ success }}</div>
+    {% endif %}
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3>
+      </div>
+      <div class="panel-body">
+        <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-payment" class="form-horizontal">
+          <ul class="nav nav-tabs">
+            <li class="active"><a href="#tab-geral" data-toggle="tab">{{ tab_geral }}</a></li>
+            <li><a href="#tab-api" data-toggle="tab">{{ tab_api }}</a></li>
+            <li><a href="#tab-situacoes" data-toggle="tab">{{ tab_situacoes }}</a></li>
+            <li><a href="#tab-campos" data-toggle="tab">{{ tab_campos }}</a></li>
+            <li><a href="#tab-finalizacao" data-toggle="tab">{{ tab_finalizacao }}</a></li>
+          </ul>
+          <div class="tab-content">
+            <div class="tab-pane active" id="tab-geral">
+              <div class="alert alert-info"><i class="fa fa-info-circle"></i> {{ text_info_geral }}
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><span class="text-danger">*</span> <strong>{{ entry_chave }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_chave }}</span>
+                </div>
+                <div class="col-sm-6">
+                  {% set id = 0 %}
+                  <h5><strong>{{ store_default }}</strong></h5>
+                  <input type="text" name="chave[{{ id }}]" value="{{ chave[id] }}" placeholder="" class="form-control" />
+                  <br>
+                  {% for store in stores %}
+                  {% set id = store.store_id %}
+                  <h5><strong>{{ store.name }}</strong></h5>
+                  {% if store.store_id in chave|keys %}
+                  <input type="text" name="chave[{{ id }}]" value="{{ chave[id] }}" placeholder="" class="form-control" />
+                  {% else %}
+                  <input type="text" name="chave[{{ id }}]" value="" placeholder="" class="form-control" />
+                  {% endif %}
+                  {% endfor %}
+                  {% if error_chave %}
+                  <div class="text-danger">{{ error_chave }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><span class="text-danger">*</span> <strong>{{ entry_lojas }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_lojas }}</span>
+                </div>
+                <div class="col-sm-6">
+                  <div class="well well-sm" style="height: 150px; overflow: auto;">
+                    <div class="checkbox">
+                      <label>
+                        {% if '0' in stores %}
+                        <input type="checkbox" name="stores[]" value="0" checked="checked" />
+                        {{ store_default }}
+                        {% else %}
+                        <input type="checkbox" name="stores[]" value="0" />
+                        {{ store_default }}
+                        {% endif %}
+                      </label>
+                    </div>
+                    {% for store in stores %}
+                    <div class="checkbox">
+                      <label>
+                        {% if store.store_id in stores %}
+                        <input type="checkbox" name="stores[]" value="{{ store.store_id }}" checked="checked" />
+                        {{ store.name }}
+                        {% else %}
+                        <input type="checkbox" name="stores[]" value="{{ store.store_id }}" />
+                        {{ store.name }}
+                        {% endif %}
+                      </label>
+                    </div>
+                    {% endfor %}
+                  </div>
+                  <a onclick="$(this).parent().find(':checkbox').prop('checked', true);">{{ text_select_all }}</a> / <a onclick="$(this).parent().find(':checkbox').prop('checked', false);">{{ text_unselect_all }}</a>
+                  {% if error_stores %}
+                  <div class="text-danger">{{ error_stores }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><span class="text-danger">*</span> <strong>{{ entry_tipos_clientes }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_tipos_clientes }}</span>
+                </div>
+                <div class="col-sm-6">
+                  <div class="well well-sm" style="height: 150px; overflow: auto;">
+                    {% for customer_group in customer_groups %}
+                    <div class="checkbox">
+                      <label>
+                        {% if customer_group.customer_group_id in customer_groups %}
+                        <input type="checkbox" name="customer_groups[]" value="{{ customer_group.customer_group_id }}" checked="checked" />
+                        {{ customer_group.name }}
+                        {% else %}
+                        <input type="checkbox" name="customer_groups[]" value="{{ customer_group.customer_group_id }}" />
+                        {{ customer_group.name }}
+                        {% endif %}
+                      </label>
+                    </div>
+                    {% endfor %}
+                  </div>
+                  <a onclick="$(this).parent().find(':checkbox').prop('checked', true);">{{ text_select_all }}</a> / <a onclick="$(this).parent().find(':checkbox').prop('checked', false);">{{ text_unselect_all }}</a>
+                  {% if error_customer_groups %}
+                  <div class="text-danger">{{ error_customer_groups }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><strong>{{ entry_total }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_total }}</span>
+                </div>
+                <div class="col-sm-2">
+                  <input type="text" name="total" value="{{ total }}" class="form-control" />
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><strong>{{ entry_geo_zone }}</strong></h5>
+                </div>
+                <div class="col-sm-3">
+                  <select name="geo_zone_id" class="form-control">
+                    <option value="0">{{ text_all_zones }}</option>
+                    {% for geo_zone in geo_zones %}
+                    {% if geo_zone.geo_zone_id == geo_zone_id %}
+                    <option value="{{ geo_zone.geo_zone_id }}" selected="selected">{{ geo_zone.name }}</option>
+                    {% else %}
+                    <option value="{{ geo_zone.geo_zone_id }}">{{ geo_zone.name }}</option>
+                    {% endif %}
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><strong>{{ entry_status }}</strong></h5>
+                </div>
+                <div class="col-sm-2">
+                  <select name="status" class="form-control">
+                    {% if status %}
+                    <option value="1" selected="selected">{{ text_enabled }}</option>
+                    <option value="0">{{ text_disabled }}</option>
+                    {% else %}
+                    <option value="1">{{ text_enabled }}</option>
+                    <option value="0" selected="selected">{{ text_disabled }}</option>
+                    {% endif %}
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><strong>{{ entry_sort_order }}</strong></h5>
+                </div>
+                <div class="col-sm-2">
+                  <input type="text" name="sort_order" value="{{ sort_order }}" class="form-control" />
+                </div>
+              </div>
+            </div>
+            <div class="tab-pane" id="tab-api">
+              <div class="alert alert-info"><i class="fa fa-info-circle"></i> {{ text_info_api }}
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><span class="text-danger">*</span> <strong>{{ entry_codigo_site }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_codigo_site }}</span>
+                </div>
+                <div class="col-sm-4">
+                  <input type="text" name="codigo_site" value="{{ codigo_site }}" placeholder="" class="form-control" />
+                  {% if error_codigo_site %}
+                  <div class="text-danger">{{ error_codigo_site }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><span class="text-danger">*</span> <strong>{{ entry_chave_criptografia }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_chave_criptografia }}</span>
+                </div>
+                <div class="col-sm-3">
+                  <input type="text" name="chave_criptografia" value="{{ chave_criptografia }}" placeholder="" class="form-control" />
+                  {% if error_chave_criptografia %}
+                  <div class="text-danger">{{ error_chave_criptografia }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><strong>{{ entry_url_retorno }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_url_retorno }}</span>
+                </div>
+                <div class="col-sm-9">
+                  <div class="alert alert-info">
+                    <label>{{ text_url_retorno }}</label>
+                    <div class="input-group" style="width: 100%;">
+                      <span class="input-group-addon"><i class="fa fa-link"></i></span>
+                      <input type="text" value='{{ url_retorno }}' class="form-control" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><strong>{{ entry_linha_comando }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_linha_comando }}</span>
+                </div>
+                <div class="col-sm-9">
+                  <div class="alert alert-info">
+                    <label>{{ text_linha_comando }}</label>
+                    <div class="input-group" style="width: 100%;">
+                      <span class="input-group-addon"><i class="fa fa-terminal"></i></span>
+                      <input type="text" id="linha-comando" value='{{ linha_comando }}' class="form-control" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><strong>{{ entry_url_key }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_url_key }}</span>
+                </div>
+                <div class="col-sm-4">
+                  <input type="text" name="url_key" value="{{ url_key }}" placeholder="" class="form-control" />
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><strong>{{ entry_email_notificacao }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_email_notificacao }}</span>
+                </div>
+                <div class="col-sm-2">
+                  <select name="email_notificacao" class="form-control">
+                    {% if email_notificacao %}
+                    <option value="1" selected="selected">{{ text_yes }}</option>
+                    <option value="0">{{ text_no }}</option>
+                    {% else %}
+                    <option value="1">{{ text_yes }}</option>
+                    <option value="0" selected="selected">{{ text_no }}</option>
+                    {% endif %}
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><span class="text-danger">*</span> <strong>{{ entry_vencimento }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_vencimento }}</span>
+                </div>
+                <div class="col-sm-2">
+                  <input type="text" name="vencimento" value="{{ vencimento }}" placeholder="" class="form-control" />
+                  {% if error_vencimento %}
+                  <div class="text-danger">{{ error_vencimento }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><span class="text-danger">*</span> <strong>{{ entry_expirar }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_expirar }}</span>
+                </div>
+                <div class="col-sm-2">
+                  <input type="text" name="expirar" value="{{ expirar }}" placeholder="" class="form-control" />
+                  {% if error_expirar %}
+                  <div class="text-danger">{{ error_expirar }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><strong>{{ entry_observacao1 }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_observacao1 }}</span>
+                </div>
+                <div class="col-sm-5">
+                  <input type="text" name="observacao1" value="{{ observacao1 }}" placeholder="" class="form-control" />
+                  {% if error_observacao1 %}
+                  <div class="text-danger">{{ error_observacao1 }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><strong>{{ entry_observacao2 }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_observacao2 }}</span>
+                </div>
+                <div class="col-sm-5">
+                  <input type="text" name="observacao2" value="{{ observacao2 }}" placeholder="" class="form-control" />
+                  {% if error_observacao2 %}
+                  <div class="text-danger">{{ error_observacao2 }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><strong>{{ entry_observacao3 }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_observacao3 }}</span>
+                </div>
+                <div class="col-sm-5">
+                  <input type="text" name="observacao3" value="{{ observacao3 }}" placeholder="" class="form-control" />
+                  {% if error_observacao3 %}
+                  <div class="text-danger">{{ error_observacao3 }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><strong>{{ entry_prefixo }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_prefixo }}</span>
+                </div>
+                <div class="col-sm-2">
+                  <input type="text" name="prefixo" value="{{ prefixo }}" placeholder="" class="form-control" />
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><strong>{{ entry_sufixo }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_sufixo }}</span>
+                </div>
+                <div class="col-sm-2">
+                  <input type="text" name="sufixo" value="{{ sufixo }}" placeholder="" class="form-control" />
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><strong>{{ entry_debug }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_debug }}</span>
+                </div>
+                <div class="col-sm-2">
+                  <select name="debug" class="form-control">
+                    {% if debug %}
+                    <option value="1" selected="selected">{{ text_enabled }}</option>
+                    <option value="0">{{ text_disabled }}</option>
+                    {% else %}
+                    <option value="1">{{ text_enabled }}</option>
+                    <option value="0" selected="selected">{{ text_disabled }}</option>
+                    {% endif %}
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="tab-pane" id="tab-situacoes">
+              <div class="alert alert-info"><i class="fa fa-info-circle"></i> {{ text_info_situacoes }}
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><strong>{{ entry_aguardando }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_aguardando }}</span>
+                </div>
+                <div class="col-sm-4">
+                  <select name="situacao_aguardando_id" class="form-control">
+                    {% for order_status in order_statuses %}
+                    {% if order_status.order_status_id == situacao_aguardando_id %}
+                    <option value="{{ order_status.order_status_id }}" selected="selected">{{ order_status.name }}</option>
+                    {% else %}
+                    <option value="{{ order_status.order_status_id }}">{{ order_status.name }}</option>
+                    {% endif %}
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><strong>{{ entry_gerado }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_gerado }}</span>
+                </div>
+                <div class="col-sm-4">
+                  <select name="situacao_gerado_id" class="form-control">
+                    {% for order_status in order_statuses %}
+                    {% if order_status.order_status_id == situacao_gerado_id %}
+                    <option value="{{ order_status.order_status_id }}" selected="selected">{{ order_status.name }}</option>
+                    {% else %}
+                    <option value="{{ order_status.order_status_id }}">{{ order_status.name }}</option>
+                    {% endif %}
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><strong>{{ entry_compensando }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_compensando }}</span>
+                </div>
+                <div class="col-sm-4">
+                  <select name="situacao_compensando_id" class="form-control">
+                    {% for order_status in order_statuses %}
+                    {% if order_status.order_status_id == situacao_compensando_id %}
+                    <option value="{{ order_status.order_status_id }}" selected="selected">{{ order_status.name }}</option>
+                    {% else %}
+                    <option value="{{ order_status.order_status_id }}">{{ order_status.name }}</option>
+                    {% endif %}
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><strong>{{ entry_nao_compensado }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_nao_compensado }}</span>
+                </div>
+                <div class="col-sm-4">
+                  <select name="situacao_nao_compensado_id" id="input-nao-compensado" class="form-control">
+                    {% for order_status in order_statuses %}
+                    {% if order_status.order_status_id == situacao_nao_compensado_id %}
+                    <option value="{{ order_status.order_status_id }}" selected="selected">{{ order_status.name }}</option>
+                    {% else %}
+                    <option value="{{ order_status.order_status_id }}">{{ order_status.name }}</option>
+                    {% endif %}
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><strong>{{ entry_pago }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_pago }}</span>
+                </div>
+                <div class="col-sm-4">
+                  <select name="situacao_pago_id" class="form-control">
+                    {% for order_status in order_statuses %}
+                    {% if order_status.order_status_id == situacao_pago_id %}
+                    <option value="{{ order_status.order_status_id }}" selected="selected">{{ order_status.name }}</option>
+                    {% else %}
+                    <option value="{{ order_status.order_status_id }}">{{ order_status.name }}</option>
+                    {% endif %}
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><strong>{{ entry_cancelado }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_cancelado }}</span>
+                </div>
+                <div class="col-sm-4">
+                  <select name="situacao_cancelado_id" class="form-control">
+                    {% for order_status in order_statuses %}
+                    {% if order_status.order_status_id == situacao_cancelado_id %}
+                    <option value="{{ order_status.order_status_id }}" selected="selected">{{ order_status.name }}</option>
+                    {% else %}
+                    <option value="{{ order_status.order_status_id }}">{{ order_status.name }}</option>
+                    {% endif %}
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="tab-pane" id="tab-campos">
+              <div class="alert alert-info"><i class="fa fa-info-circle"></i> {{ text_info_campos }}
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><strong>{{ entry_custom_razao_id }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_custom_razao_id }}</span>
+                </div>
+                <div class="col-sm-3">
+                  <label>{{ text_campo }}</label>
+                  <select name="custom_razao_id" class="form-control">
+                    <option value="">{{ text_none }}</option>
+                    {% if custom_razao_id == 'C' %}
+                    <option value="C" selected="selected">{{ text_coluna }}</option>
+                    {% else %}
+                    <option value="C">{{ text_coluna }}</option>
+                    {% endif %}
+                    {% for custom_field in custom_fields %}
+                    {% if custom_field.location == 'account' %}
+                    {% if custom_field.type == 'text' %}
+                    {% if custom_field.custom_field_id == custom_razao_id %}
+                    <option value="{{ custom_field.custom_field_id }}" selected="selected">{{ custom_field.name }}</option>
+                    {% else %}
+                    <option value="{{ custom_field.custom_field_id }}">{{ custom_field.name }}</option>
+                    {% endif %}
+                    {% endif %}
+                    {% endif %}
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="col-sm-3" id="razao_coluna">
+                  <label>{{ text_razao }}</label>
+                  <select name="razao_coluna" class="form-control">
+                    <option value=""></option>
+                    {% for column in columns %}
+                    {% if column.Field == razao_coluna %}
+                    <option value="{{ column.Field }}" selected="selected">{{ column.Field }}</option>
+                    {% else %}
+                    <option value="{{ column.Field }}">{{ column.Field }}</option>
+                    {% endif %}
+                    {% endfor %}
+                  </select>
+                  {% if error_razao %}
+                  <div class="text-danger">{{ error_razao }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><strong>{{ entry_custom_cnpj_id }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_custom_cnpj_id }}</span>
+                </div>
+                <div class="col-sm-3">
+                  <label>{{ text_campo }}</label>
+                  <select name="custom_cnpj_id" class="form-control">
+                    <option value="">{{ text_none }}</option>
+                    {% if custom_cnpj_id == 'C' %}
+                    <option value="C" selected="selected">{{ text_coluna }}</option>
+                    {% else %}
+                    <option value="C">{{ text_coluna }}</option>
+                    {% endif %}
+                    {% for custom_field in custom_fields %}
+                    {% if custom_field.location == 'account' %}
+                    {% if custom_field.type == 'text' %}
+                    {% if custom_field.custom_field_id == custom_cnpj_id %}
+                    <option value="{{ custom_field.custom_field_id }}" selected="selected">{{ custom_field.name }}</option>
+                    {% else %}
+                    <option value="{{ custom_field.custom_field_id }}">{{ custom_field.name }}</option>
+                    {% endif %}
+                    {% endif %}
+                    {% endif %}
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="col-sm-3" id="cnpj_coluna">
+                  <label>{{ text_cnpj }}</label>
+                  <select name="cnpj_coluna" class="form-control">
+                    <option value=""></option>
+                    {% for column in columns %}
+                    {% if column.Field == cnpj_coluna %}
+                    <option value="{{ column.Field }}" selected="selected">{{ column.Field }}</option>
+                    {% else %}
+                    <option value="{{ column.Field }}">{{ column.Field }}</option>
+                    {% endif %}
+                    {% endfor %}
+                  </select>
+                  {% if error_cnpj %}
+                  <div class="text-danger">{{ error_cnpj }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><span class="text-danger">*</span> <strong>{{ entry_custom_cpf_id }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_custom_cpf_id }}</span>
+                </div>
+                <div class="col-sm-3">
+                  <label>{{ text_campo }}</label>
+                  <select name="custom_cpf_id" class="form-control">
+                    <option value="">{{ text_none }}</option>
+                    {% if custom_cpf_id == 'C' %}
+                    <option value="C" selected="selected">{{ text_coluna }}</option>
+                    {% else %}
+                    <option value="C">{{ text_coluna }}</option>
+                    {% endif %}
+                    {% for custom_field in custom_fields %}
+                    {% if custom_field.location == 'account' %}
+                    {% if custom_field.type == 'text' %}
+                    {% if custom_field.custom_field_id == custom_cpf_id %}
+                    <option value="{{ custom_field.custom_field_id }}" selected="selected">{{ custom_field.name }}</option>
+                    {% else %}
+                    <option value="{{ custom_field.custom_field_id }}">{{ custom_field.name }}</option>
+                    {% endif %}
+                    {% endif %}
+                    {% endif %}
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="col-sm-3" id="cpf_coluna">
+                  <label>{{ text_cpf }}</label>
+                  <select name="cpf_coluna" class="form-control">
+                    <option value=""></option>
+                    {% for column in columns %}
+                    {% if column.Field == cpf_coluna %}
+                    <option value="{{ column.Field }}" selected="selected">{{ column.Field }}</option>
+                    {% else %}
+                    <option value="{{ column.Field }}">{{ column.Field }}</option>
+                    {% endif %}
+                    {% endfor %}
+                  </select>
+                  {% if error_cpf %}
+                  <div class="text-danger">{{ error_cpf }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><span class="text-danger">*</span> <strong>{{ entry_custom_numero_id }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_custom_numero_id }}</span>
+                </div>
+                <div class="col-sm-3">
+                  <label>{{ text_campo }}</label>
+                  <select name="custom_numero_id" class="form-control">
+                    <option value="">{{ text_none }}</option>
+                    {% if custom_numero_id == 'C' %}
+                    <option value="C" selected="selected">{{ text_coluna }}</option>
+                    {% else %}
+                    <option value="C">{{ text_coluna }}</option>
+                    {% endif %}
+                    {% for custom_field in custom_fields %}
+                    {% if custom_field.location == 'address' %}
+                    {% if custom_field.type == 'text' %}
+                    {% if custom_field.custom_field_id == custom_numero_id %}
+                    <option value="{{ custom_field.custom_field_id }}" selected="selected">{{ custom_field.name }}</option>
+                    {% else %}
+                    <option value="{{ custom_field.custom_field_id }}">{{ custom_field.name }}</option>
+                    {% endif %}
+                    {% endif %}
+                    {% endif %}
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="col-sm-3" id="numero_fatura_coluna">
+                  <label>{{ text_numero_fatura }}</label>
+                  <select name="numero_fatura_coluna" class="form-control">
+                    <option value=""></option>
+                    {% for column in columns %}
+                    {% if column.Field == numero_fatura_coluna %}
+                    <option value="{{ column.Field }}" selected="selected">{{ column.Field }}</option>
+                    {% else %}
+                    <option value="{{ column.Field }}">{{ column.Field }}</option>
+                    {% endif %}
+                    {% endfor %}
+                  </select>
+                  {% if error_numero_fatura %}
+                  <div class="text-danger">{{ error_numero_fatura }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><strong>{{ entry_custom_complemento_id }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_custom_complemento_id }}</span>
+                </div>
+                <div class="col-sm-3">
+                  <label>{{ text_campo }}</label>
+                  <select name="custom_complemento_id" class="form-control">
+                    <option value="">{{ text_none }}</option>
+                    {% if custom_complemento_id == 'C' %}
+                    <option value="C" selected="selected">{{ text_coluna }}</option>
+                    {% else %}
+                    <option value="C">{{ text_coluna }}</option>
+                    {% endif %}
+                    {% for custom_field in custom_fields %}
+                    {% if custom_field.location == 'address' %}
+                    {% if custom_field.type == 'text' %}
+                    {% if custom_field.custom_field_id == custom_complemento_id %}
+                    <option value="{{ custom_field.custom_field_id }}" selected="selected">{{ custom_field.name }}</option>
+                    {% else %}
+                    <option value="{{ custom_field.custom_field_id }}">{{ custom_field.name }}</option>
+                    {% endif %}
+                    {% endif %}
+                    {% endif %}
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="col-sm-3" id="complemento_fatura_coluna">
+                  <label>{{ text_complemento_fatura }}</label>
+                  <select name="complemento_fatura_coluna" class="form-control">
+                    <option value=""></option>
+                    {% for column in columns %}
+                    {% if column.Field == complemento_fatura_coluna %}
+                    <option value="{{ column.Field }}" selected="selected">{{ column.Field }}</option>
+                    {% else %}
+                    <option value="{{ column.Field }}">{{ column.Field }}</option>
+                    {% endif %}
+                    {% endfor %}
+                  </select>
+                  {% if error_complemento_fatura %}
+                  <div class="text-danger">{{ error_complemento_fatura }}</div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+            <div class="tab-pane" id="tab-finalizacao">
+              <div class="alert alert-info"><i class="fa fa-info-circle"></i> {{ text_info_finalizacao }}
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><span class="text-danger">*</span> <strong>{{ entry_titulo }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_titulo }}</span>
+                </div>
+                <div class="col-sm-4">
+                  <input type="text" name="titulo" value="{{ titulo }}" placeholder="" maxlength="128" class="form-control" />
+                  {% if error_titulo %}
+                  <div class="text-danger">{{ error_titulo }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><strong>{{ entry_imagem }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_imagem }}</span>
+                </div>
+                <div class="col-sm-9">
+                  <a href="" id="thumb-image" data-toggle="image" class="img-thumbnail">
+                    <img src="{{ thumb }}" alt="" title="" data-placeholder="{{ no_image }}" />
+                  </a>
+                  <input type="hidden" name="imagem" value="{{ imagem }}" id="input-image" />
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><strong>{{ entry_instrucoes }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_instrucoes }}</span>
+                </div>
+                <div class="col-sm-5">
+                  <select name="instrucoes_id" class="form-control">
+                    <option value="0">{{ text_none }}</option>
+                    {% for information in informations %}
+                    {% if information.information_id == instrucoes_id %}
+                    <option value="{{ information.information_id }}" selected="selected">{{ information.title }}</option>
+                    {% else %}
+                    <option value="{{ information.information_id }}">{{ information.title }}</option>
+                    {% endif %}
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><span class="text-danger">*</span> <strong>{{ entry_texto_botao }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_texto_botao }}</span>
+                </div>
+                <div class="col-sm-3">
+                  <input type="text" name="texto_botao" value="{{ texto_botao }}" placeholder="" class="form-control" />
+                  {% if error_texto_botao %}
+                  <div class="text-danger">{{ error_texto_botao }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><span class="text-danger">*</span> <strong>{{ entry_codigo_css }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_codigo_css }}</span>
+                </div>
+                <div class="col-sm-9">
+                  <textarea name="codigo_css" rows="8" class="form-control">{{ codigo_css }}</textarea>
+                  {% if error_codigo_css %}
+                  <div class="text-danger">{{ error_codigo_css }}</div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript">
+    const inputUrlKey = $('input[name=url_key][type=text]');
+    const inputLinhaComando = $('#linha-comando');
+
+    inputUrlKey.on('keyup change', function() {
+      const value = $(this).val().replace(/[^a-z0-9]/g,'');
+
+      $(this).val(value);
+
+      inputLinhaComando.val('{{ linha_comando }}' + value);
+    });
+
+    inputLinhaComando.click(function() {
+      $(this).select();
+    });
+
+    inputUrlKey.trigger('change');
+
+    $('#razao_coluna').hide();
+    $('#cnpj_coluna').hide();
+    $('#cpf_coluna').hide();
+    $('#numero_fatura_coluna').hide();
+    $('#complemento_fatura_coluna').hide();
+
+    $('select[name="custom_razao_id"]').click(function() {
+      if ($(this).val() == 'C') { $('#razao_coluna').show(); } else { $('#razao_coluna').hide(); }
+    });
+
+    $('select[name="custom_cnpj_id"]').click(function() {
+      if ($(this).val() == 'C') { $('#cnpj_coluna').show(); } else { $('#cnpj_coluna').hide(); }
+    });
+
+    $('select[name="custom_cpf_id"]').click(function() {
+      if ($(this).val() == 'C') { $('#cpf_coluna').show(); } else { $('#cpf_coluna').hide(); }
+    });
+
+    $('select[name="custom_numero_id"]').click(function() {
+      if ($(this).val() == 'C') { $('#numero_fatura_coluna').show(); } else { $('#numero_fatura_coluna').hide(); }
+    });
+
+    $('select[name="custom_complemento_id"]').click(function() {
+      if ($(this).val() == 'C') { $('#complemento_fatura_coluna').show(); } else { $('#complemento_fatura_coluna').hide(); }
+    });
+
+    $('select[name="custom_razao_id"]').trigger('change');
+    $('select[name="custom_cnpj_id"]').trigger('change');
+    $('select[name="custom_cpf_id"]').trigger('change');
+    $('select[name="custom_numero_id"]').trigger('change');
+    $('select[name="custom_complemento_id"]').trigger('change');
+  </script>
+</div>
+{{ footer }}

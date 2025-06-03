@@ -1,0 +1,415 @@
+<!--
+ StorePickup Map
+ Premium Extension
+ 
+ Copyright (c) 2013 - 2019 Adikon.eu
+ http://www.adikon.eu/
+ 
+ You may not copy or reuse code within this file without written permission.
+-->
+
+{{ header }}{{ column_left }}
+<div id="content">
+	<div class="page-header">
+		<div class="container-fluid">
+			<div class="pull-right">
+				<button type="submit" form="form-setting" id="button-save" class="btn btn-primary">{{ button_save }}</button>
+				<a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a>
+			</div>
+			{% if links %}
+			<div class="btn-group manage-link">
+				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></button>
+				<ul class="dropdown-menu">
+					{% for manage_link in links %}
+					{% if manage_link.name %}
+					<li><a href="{{ manage_link.href }}">{{ manage_link.name }}</a></li>
+					{% else %} 
+					<li class="divider"></li>
+					{% endif %}
+					{% endfor %}
+				</ul>
+			</div>
+			{% endif %}
+			<h1>{{ heading_title }}</h1>
+		</div>
+	</div>
+	<div class="container-fluid">
+		{% if error_warning %}
+		<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+			<button type="button" class="close" data-dismiss="alert">&times;</button>
+		</div>
+		{% endif %}
+		{% if success %}
+		<div class="alert alert-success"><i class="fa fa-check-circle"></i> {{ success }}
+			<button type="button" class="close" data-dismiss="alert">&times;</button>
+		</div>
+		{% endif %}
+		<div class="panel panel-default panel-nav-tabs">
+			<div class="panel-heading">
+				<div class="pull-right">
+					<select onChange="location.href = this.value">
+						{% for store in stores %}
+						{% if store.store_id == filter_store_id %}
+						<option value="{{ store.filter }}" selected="selected">{{ store.name }}</option>
+						{% else %} 
+						<option value="{{ store.filter }}">{{ store.name }}</option>
+						{% endif %}
+						{% endfor %}
+					</select>
+				</div>
+				<ul class="nav nav-tabs" id="general-tabs">
+					<li class="active"><a href="#tab-setting" data-toggle="tab">{{ tab_setting }}</a></li>
+					<li><a href="#tab-support" data-toggle="tab">Support</a></li>
+				</ul>
+			</div>
+			<div class="panel-body">
+				<form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-setting" class="form-horizontal">
+					<div class="tab-content">
+						<div class="tab-pane active in" id="tab-setting">
+							<div class="setting-name">{{ caption_general }}</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">{{ entry_module_status }}</label>
+								<div class="col-sm-10">
+									<select name="{{ module_name }}[status]" class="form-control">
+										{% if status == 1 %}
+										<option value="1" selected="selected">{{ text_enabled }}</option>
+										<option value="0">{{ text_disabled }}</option>
+										{% else %} 
+										<option value="1">{{ text_enabled }}</option>
+										<option value="0" selected="selected">{{ text_disabled }}</option>
+										{% endif %}
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">{{ entry_name }}</label>
+								<div class="col-sm-10">
+									<div class="input-group language-dropdown">
+										<span class="input-group-addon"></span>
+										{% for language in languages %}
+										<input type="text" name="{{ module_name }}[name][{{ language.language_id }}]" value="{{ name[language.language_id] ? name[language.language_id] : '' }}" data-language="{{ language.language_id }}" placeholder="{{ entry_name }}" class="form-control" />
+										{% endfor %}
+										<div class="input-group-btn">
+											<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="caret"></span></button>
+											<ul class="dropdown-menu dropdown-menu-right">
+												{% for language in languages %}
+												<li><a data-language="{{ language.language_id }}" data-image="{{ language.image }}"><img src="{{ language.image }}" title="{{ language.name }}" /> {{ language.name }}</a></li>
+												{% endfor %}
+											</ul>
+										</div>
+									</div>
+									{% if error.name %}
+									<div class="text-danger">{{ error.name }}</div>
+									{% endif %}
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label s_help">{{ entry_apikey }}<i>{{ help_apikey }}</i></label>
+								<div class="col-sm-10">
+									<input type="text" name="{{ module_name }}[apikey]" value="{{ apikey }}" placeholder="{{ entry_apikey }}" class="form-control" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label s_help">{{ entry_category }}<i>{{ help_category }}</i></label>
+								<div class="col-sm-10">
+									<div class="input-group">
+										<span class="input-group-addon"><i class="fa fa-search"></i></span>
+										<input type="text" name="category" value="" placeholder="{{ entry_category }}" class="form-control" />
+									</div>
+									<div id="category" class="well well-sm" style="height: 150px; overflow: auto;">
+										{% if categories %}
+										{% for category in categories %}
+										<div id="category{{ category.category_id }}"><i class="fa fa-minus-circle"></i> {{ category.name }}<input type="hidden" name="{{ module_name }}[categories][]" value="{{ category.category_id }}" /></div>
+										{% endfor %}
+										{% endif %}
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label s_help">{{ entry_notify_status }}<i>{{ help_notify_status }}</i></label>
+								<div class="col-sm-10">
+									<select name="{{ module_name }}[notify_status]" class="form-control">
+										{% if notify_status == 1 %}
+										<option value="1" selected="selected">{{ text_enabled }}</option>
+										<option value="0">{{ text_disabled }}</option>
+										{% else %} 
+										<option value="1">{{ text_enabled }}</option>
+										<option value="0" selected="selected">{{ text_disabled }}</option>
+										{% endif %}
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">{{ entry_tax_class }}</label>
+								<div class="col-sm-10">
+									<select name="{{ module_name }}[tax_class_id]" class="form-control">
+										<option value="0">{{ text_none }}</option>
+										{% for tax_class in tax_classes %}
+										{% if tax_class.tax_class_id == tax_class_id %}
+										<option value="{{ tax_class.tax_class_id }}" selected="selected">{{ tax_class.title }}</option>
+										{% else %} 
+										<option value="{{ tax_class.tax_class_id }}">{{ tax_class.title }}</option>
+										{% endif %}
+										{% endfor %}
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">{{ entry_geo_zone }}</label>
+								<div class="col-sm-10">
+									<select name="{{ module_name }}[geo_zone_id]" class="form-control">
+										<option value="0">{{ text_none }}</option>
+										{% for geo_zone in geo_zones %}
+										{% if geo_zone.geo_zone_id == geo_zone_id %}
+										<option value="{{ geo_zone.geo_zone_id }}" selected="selected">{{ geo_zone.name }}</option>
+										{% else %} 
+										<option value="{{ geo_zone.geo_zone_id }}">{{ geo_zone.name }}</option>
+										{% endif %}
+										{% endfor %}
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">{{ entry_sort_order }}</label>
+								<div class="col-sm-10">
+									<input type="text" name="{{ module_name }}[sort_order]" value="{{ sort_order }}" placeholder="{{ entry_sort_order }}" class="form-control" />
+								</div>
+							</div>
+							<div class="setting-name">{{ caption_appearance }}</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">{{ entry_cost_status }}</label>
+								<div class="col-sm-10">
+									<select name="{{ module_name }}[cost_status]" class="form-control">
+										{% if cost_status == 1 %}
+										<option value="1" selected="selected">{{ text_enabled }}</option>
+										<option value="0">{{ text_disabled }}</option>
+										{% else %} 
+										<option value="1">{{ text_enabled }}</option>
+										<option value="0" selected="selected">{{ text_disabled }}</option>
+										{% endif %}
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label s_help">{{ entry_distance_status }}<i>{{ help_distance_status }}</i></label>
+								<div class="col-sm-7">
+									<select name="{{ module_name }}[distance_status]" class="form-control">
+										{% if distance_status == 1 %}
+										<option value="1" selected="selected">{{ text_enabled }}</option>
+										<option value="0">{{ text_disabled }}</option>
+										{% else %} 
+										<option value="1">{{ text_enabled }}</option>
+										<option value="0" selected="selected">{{ text_disabled }}</option>
+										{% endif %}
+									</select>
+								</div>
+								<div class="col-sm-3">
+									<select name="{{ module_name }}[distance_unit]" class="form-control">
+										{% if distance_unit == 'k' %}
+										<option value="k" selected="selected">km</option>
+										{% else %} 
+										<option value="k">km</option>
+										{% endif %}
+										{% if distance_unit == 'm' %}
+										<option value="m" selected="selected">miles</option>
+										{% else %} 
+										<option value="m">miles</option>
+										{% endif %}
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label s_help">{{ entry_coordinate_status }}<i>{{ help_coordinate_status }}</i></label>
+								<div class="col-sm-10">
+									<select name="{{ module_name }}[coordinate_status]" class="form-control">
+										{% if coordinate_status == 1 %}
+										<option value="1" selected="selected">{{ text_enabled }}</option>
+										<option value="0">{{ text_disabled }}</option>
+										{% else %} 
+										<option value="1">{{ text_enabled }}</option>
+										<option value="0" selected="selected">{{ text_disabled }}</option>
+										{% endif %}
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label s_help">{{ entry_filter_status }}<i>{{ help_filter_status }}</i></label>
+								<div class="col-sm-10">
+									<select name="{{ module_name }}[filter_status]" class="form-control">
+										{% if filter_status == 1 %}
+										<option value="1" selected="selected">{{ text_enabled }}</option>
+										<option value="0">{{ text_disabled }}</option>
+										{% else %} 
+										<option value="1">{{ text_enabled }}</option>
+										<option value="0" selected="selected">{{ text_disabled }}</option>
+										{% endif %}
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label s_help">{{ entry_map_status }}<i>{{ help_map_status }}</i></label>
+								<div class="col-sm-10">
+									<div class="row">
+										<div class="col-sm-6 col-md-4">
+											<div class="form-group">
+												<div class="col-sm-12">
+													<select name="{{ module_name }}[map_status]" class="form-control">
+														{% if map_status == 1 %}
+														<option value="1" selected="selected">{{ text_enabled }}</option>
+														<option value="0">{{ text_disabled }}</option>
+														{% else %} 
+														<option value="1">{{ text_enabled }}</option>
+														<option value="0" selected="selected">{{ text_disabled }}</option>
+														{% endif %}
+													</select>
+												</div>
+											</div>
+										</div>
+										<div class="col-sm-6 col-md-4">
+											<div class="form-group">
+												<div class="col-sm-12">
+													<div class="input-group">
+														<span class="input-group-addon"><i class="fa fa-arrows-h"></i></span>
+														<input type="text" name="{{ module_name }}[map_width]" value="{{ map_width }}" placeholder="{{ entry_map_width }}" class="form-control" />
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="col-sm-12 col-md-4">
+											<div class="form-group">
+												<div class="col-sm-12">
+													<div class="input-group">
+														<span class="input-group-addon"><i class="fa fa-arrows-v"></i></span>
+														<input type="text" name="{{ module_name }}[map_height]" value="{{ map_height }}" placeholder="{{ entry_map_height }}" class="form-control" />
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label s_help">{{ entry_pickup_list_status }}<i>{{ help_pickup_list_status }}</i></label>
+								<div class="col-sm-10">
+									<select name="{{ module_name }}[pickup_list_status]" class="form-control">
+										{% if pickup_list_status == 1 %}
+										<option value="1" selected="selected">{{ text_enabled }}</option>
+										<option value="0">{{ text_disabled }}</option>
+										{% else %} 
+										<option value="1">{{ text_enabled }}</option>
+										<option value="0" selected="selected">{{ text_disabled }}</option>
+										{% endif %}
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label s_help">{{ entry_limit }}<i>{{ help_limit }}</i></label>
+								<div class="col-sm-10">
+									<input type="text" name="{{ module_name }}[limit]" value="{{ limit }}" placeholder="{{ entry_limit }}" class="form-control" />
+								</div>
+							</div>
+						</div>
+						<div class="tab-pane" id="tab-support">
+							<div class="row">
+								<div class="col-sm-8 col-md-8">
+									<div class="row">
+										<div class="col-sm-8">
+											<h4><b>You need help?</b></h4>
+											<p>If you have any questions, idea or need help please feel free to contact us via ticket system</p>
+										</div>
+										<div class="col-sm-4 text-right">
+											<a onclick="window.open('https://www.adikon.eu/login')" class="btn btn-warning btn-lg">Submit Ticket</a>
+										</div>
+									</div>
+									<hr />
+									<div class="row">
+										<div class="col-sm-8">
+											<h4><b>Need something customized?</b></h4>
+											<p>Custom services, installations, custom theme integrations & updates and resolving conflicts with other third party extensions</p>
+										</div>
+										<div class="col-sm-4 text-right">
+											<a onclick="window.open('http://www.adikon.eu/contact')" class="btn btn-info btn-lg">Get a Quote</a>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-4 col-md-4">
+									<div class="panel-default">
+										<div class="panel-body">
+											<p><a onclick="window.open('http://www.adikon.eu')" class="btn-link">Official Website</a></p>
+											<p><a onclick="window.open('http://www.opencart.com/index.php?route=marketplace/extension&filter_member=adikon')" class="btn-link">Our Modules</a></p>
+											<p><a onclick="window.open('http://www.adikon.eu/support-i8/storepickup-map-google-maps-i39')" class="btn-link">Documentation</a></p>
+										</div>
+									</div>
+								</div>
+							</div>
+							<script type="text/javascript">
+							var mod_id = '7123';
+							var domain = '{{ bGljZW5zZV9kb21haW4 }}';
+							</script>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="col-sm-12 text-center">
+			<br />Adikon.eu, All Rights Reserved.
+		</div>
+	</div>
+<script type="text/javascript"><!--
+$('input[name="category"]').autocomplete({
+	'source': function(request, response) {
+		$.ajax({
+			url: 'index.php?route=catalog/category/autocomplete&{{ token }}&filter_name=' + encodeURIComponent(request) + '&format=raw',
+			dataType: 'json',
+			success: function(json) {
+				response($.map(json, function(item) {
+					return {
+						label: item['name'],
+						value: item['category_id']
+					}
+				}));
+			}
+		});
+	},
+	'select': function(item) {
+		$(this).val('');
+
+		$('#category' + item['value']).remove();
+
+		$('#category').append('<div id="category' + item['value'] + '"><i class="fa fa-minus-circle"></i> ' + item['label'] + '<input type="hidden" name="{{ module_name }}[categories][]" value="' + item['value'] + '" /></div>');
+	}
+});
+
+$('.well').delegate('.fa-minus-circle', 'click', function() {
+	$(this).parent().remove();
+});
+//--></script>
+<script type="text/javascript"><!--
+$('.language-dropdown .dropdown-menu a').on('click', function(e) {
+	e.preventDefault();
+
+	$(this).parent().parent().find('li').removeClass('active');
+	$(this).parent().addClass('active');
+
+	var element = $(this).parents('.language-dropdown');
+
+	element.find('span:first').html('<img src="' + $(this).data('image') + '" title="" />');
+	element.find('input').hide();
+	element.find('input[data-language="' + $(this).data('language') + '"]').css('display', 'table-cell');
+});
+
+$('.language-dropdown').each(function(index) {
+	$(this).find('.dropdown-menu a:first').trigger('click');
+});
+//--></script>
+<script type="text/javascript"><!--
+{% if filter_tab_show %}
+$('#general-tabs a[href="#tab-{{ filter_tab_show }}"]').tab('show');
+{% endif %}
+
+$('#button-save').on('click', function(e) {
+	$('#form-setting').submit();
+});
+//--></script>
+</div>
+{{ footer }}

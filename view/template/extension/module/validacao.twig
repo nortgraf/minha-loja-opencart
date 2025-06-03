@@ -1,0 +1,406 @@
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="pull-right">
+        <button type="submit" form="form-validacao" input type="hidden" id="save_stay" name="save_stay" value="1" data-toggle="tooltip" title="{{ button_save_stay }}" class="btn btn-success"><i class="fa fa-save"></i></button>
+        <button type="submit" form="form-validacao" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+        <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a>
+      </div>
+      <h1>{{ heading_title }}</h1> <span class="badge">{{ versao }}</span>
+      <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+        <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="container-fluid">
+    {% if error_warning %}
+    <div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    {% endif %}
+    {% if success %}
+    <div class="alert alert-success"><i class="fa fa-check-circle"></i> {{ success }}
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    {% endif %}
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3>
+      </div>
+      <div class="panel-body">
+        <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-validacao" class="form-horizontal">
+          <ul class="nav nav-tabs">
+            <li class="active"><a href="#tab-configuracoes" data-toggle="tab">{{ tab_configuracoes }}</a></li>
+            <li><a href="#tab-campos" data-toggle="tab">{{ tab_campos }}</a></li>
+            <li><a href="#tab-erros" data-toggle="tab">{{ tab_erros }}</a></li>
+          </ul>
+          <div class="tab-content">
+            <div class="tab-pane active" id="tab-configuracoes">
+              <div class="alert alert-info"><i class="fa fa-info-circle"></i> {{ text_configuracoes }}
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><strong>{{ entry_cpf_existe }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_cpf_existe }}</span>
+                </div>
+                <div class="col-sm-2">
+                  <select name="module_validacao_cpf_existe" class="form-control">
+                    {% if module_validacao_cpf_existe %}
+                    <option value="1" selected="selected">{{ text_yes }}</option>
+                    <option value="0">{{ text_no }}</option>
+                    {% else %}
+                    <option value="1">{{ text_yes }}</option>
+                    <option value="0" selected="selected">{{ text_no }}</option>
+                    {% endif %}
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><strong>{{ entry_maior_18_anos }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_maior_18_anos }}</span>
+                </div>
+                <div class="col-sm-2">
+                  <select name="module_validacao_maior_18_anos" class="form-control">
+                    {% if module_validacao_maior_18_anos %}
+                    <option value="1" selected="selected">{{ text_yes }}</option>
+                    <option value="0">{{ text_no }}</option>
+                    {% else %}
+                    <option value="1">{{ text_yes }}</option>
+                    <option value="0" selected="selected">{{ text_no }}</option>
+                    {% endif %}
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><strong>{{ entry_remover_placeholder }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_remover_placeholder }}</span>
+                </div>
+                <div class="col-sm-2">
+                  <select name="module_validacao_remover_placeholder" class="form-control">
+                    {% if module_validacao_remover_placeholder %}
+                    <option value="1" selected="selected">{{ text_yes }}</option>
+                    <option value="0">{{ text_no }}</option>
+                    {% else %}
+                    <option value="1">{{ text_yes }}</option>
+                    <option value="0" selected="selected">{{ text_no }}</option>
+                    {% endif %}
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><strong>{{ entry_cep_correios }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_cep_correios }}</span>
+                </div>
+                <div class="col-sm-2">
+                  <select name="module_validacao_cep_correios" class="form-control">
+                    {% if module_validacao_cep_correios %}
+                    <option value="1" selected="selected">{{ text_yes }}</option>
+                    <option value="0">{{ text_no }}</option>
+                    {% else %}
+                    <option value="1">{{ text_yes }}</option>
+                    <option value="0" selected="selected">{{ text_no }}</option>
+                    {% endif %}
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><strong>{{ entry_cep_primeiro }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_cep_primeiro }}</span>
+                </div>
+                <div class="col-sm-2">
+                  <select name="module_validacao_cep_primeiro" class="form-control">
+                    {% if module_validacao_cep_primeiro %}
+                    <option value="1" selected="selected">{{ text_yes }}</option>
+                    <option value="0">{{ text_no }}</option>
+                    {% else %}
+                    <option value="1">{{ text_yes }}</option>
+                    <option value="0" selected="selected">{{ text_no }}</option>
+                    {% endif %}
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><strong>{{ entry_cep_html }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_cep_html }}</span>
+                </div>
+                <div class="col-sm-9">
+                    <textarea name="module_validacao_cep_html" id="input-cep-html" rows="10" class="form-control">{{ module_validacao_cep_html }}</textarea>
+                </div>
+              </div>
+            </div>
+            <div class="tab-pane" id="tab-campos">
+              <div class="alert alert-info"><i class="fa fa-info-circle"></i> {{ text_campos }}
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><strong>{{ entry_razao_social }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_razao_social }}</span>
+                </div>
+                <div class="col-sm-5">
+                  <select name="module_validacao_razao_social_id" class="form-control">
+                    <option value="">{{ text_none }}</option>
+                    {% for custom_field in custom_fields %}
+                    {% if custom_field.location == 'account' %}
+                    {% if custom_field.type == 'text' %}
+                    {% if custom_field.custom_field_id == module_validacao_razao_social_id %}
+                    <option value="{{ custom_field.custom_field_id }}" selected="selected">{{ custom_field.name }}</option>
+                    {% else %}
+                    <option value="{{ custom_field.custom_field_id }}">{{ custom_field.name }}</option>
+                    {% endif %}
+                    {% endif %}
+                    {% endif %}
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><strong>{{ entry_cnpj }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_cnpj }}</span>
+                </div>
+                <div class="col-sm-5">
+                  <select name="module_validacao_cnpj_id" class="form-control">
+                    <option value="">{{ text_none }}</option>
+                    {% for custom_field in custom_fields %}
+                    {% if custom_field.location == 'account' %}
+                    {% if custom_field.type == 'text' %}
+                    {% if custom_field.custom_field_id == module_validacao_cnpj_id %}
+                    <option value="{{ custom_field.custom_field_id }}" selected="selected">{{ custom_field.name }}</option>
+                    {% else %}
+                    <option value="{{ custom_field.custom_field_id }}">{{ custom_field.name }}</option>
+                    {% endif %}
+                    {% endif %}
+                    {% endif %}
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><strong>{{ entry_cpf }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_cpf }}</span>
+                </div>
+                <div class="col-sm-5">
+                  <select name="module_validacao_cpf_id" class="form-control">
+                    <option value="">{{ text_none }}</option>
+                    {% for custom_field in custom_fields %}
+                    {% if custom_field.location == 'account' %}
+                    {% if custom_field.type == 'text' %}
+                    {% if custom_field.custom_field_id == module_validacao_cpf_id %}
+                    <option value="{{ custom_field.custom_field_id }}" selected="selected">{{ custom_field.name }}</option>
+                    {% else %}
+                    <option value="{{ custom_field.custom_field_id }}">{{ custom_field.name }}</option>
+                    {% endif %}
+                    {% endif %}
+                    {% endif %}
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><strong>{{ entry_nascimento }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_nascimento }}</span>
+                </div>
+                <div class="col-sm-5">
+                  <select name="module_validacao_nascimento_id" class="form-control">
+                    <option value="">{{ text_none }}</option>
+                    {% for custom_field in custom_fields %}
+                    {% if custom_field.location == 'account' %}
+                    {% if custom_field.type == 'text' %}
+                    {% if custom_field.custom_field_id == module_validacao_nascimento_id %}
+                    <option value="{{ custom_field.custom_field_id }}" selected="selected">{{ custom_field.name }}</option>
+                    {% else %}
+                    <option value="{{ custom_field.custom_field_id }}">{{ custom_field.name }}</option>
+                    {% endif %}
+                    {% endif %}
+                    {% endif %}
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><strong>{{ entry_celular }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_celular }}</span>
+                </div>
+                <div class="col-sm-5">
+                  <select name="module_validacao_celular_id" class="form-control">
+                    <option value="">{{ text_none }}</option>
+                    {% for custom_field in custom_fields %}
+                    {% if custom_field.location == 'account' %}
+                    {% if custom_field.type == 'text' %}
+                    {% if custom_field.custom_field_id == module_validacao_celular_id %}
+                    <option value="{{ custom_field.custom_field_id }}" selected="selected">{{ custom_field.name }}</option>
+                    {% else %}
+                    <option value="{{ custom_field.custom_field_id }}">{{ custom_field.name }}</option>
+                    {% endif %}
+                    {% endif %}
+                    {% endif %}
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><strong>{{ entry_numero }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_numero }}</span>
+                </div>
+                <div class="col-sm-5">
+                  <select name="module_validacao_numero_id" class="form-control">
+                    <option value="">{{ text_none }}</option>
+                    {% for custom_field in custom_fields %}
+                    {% if custom_field.location == 'address' %}
+                    {% if custom_field.type == 'text' %}
+                    {% if custom_field.custom_field_id == module_validacao_numero_id %}
+                    <option value="{{ custom_field.custom_field_id }}" selected="selected">{{ custom_field.name }}</option>
+                    {% else %}
+                    <option value="{{ custom_field.custom_field_id }}">{{ custom_field.name }}</option>
+                    {% endif %}
+                    {% endif %}
+                    {% endif %}
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><strong>{{ entry_complemento }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_complemento }}</span>
+                </div>
+                <div class="col-sm-5">
+                  <select name="module_validacao_complemento_id" id="input-complemento" class="form-control">
+                    <option value="">{{ text_none }}</option>
+                    {% for custom_field in custom_fields %}
+                    {% if custom_field.location == 'address' %}
+                    {% if custom_field.type == 'text' %}
+                    {% if custom_field.custom_field_id == module_validacao_complemento_id %}
+                    <option value="{{ custom_field.custom_field_id }}" selected="selected">{{ custom_field.name }}</option>
+                    {% else %}
+                    <option value="{{ custom_field.custom_field_id }}">{{ custom_field.name }}</option>
+                    {% endif %}
+                    {% endif %}
+                    {% endif %}
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="tab-pane" id="tab-erros">
+              <div class="alert alert-info"><i class="fa fa-info-circle"></i> {{ text_erros }}
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><span class="text-danger">*</span> <strong>{{ entry_msg_cnpj }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_msg_cnpj }}</span>
+                </div>
+                <div class="col-sm-9">
+                  <input type="text" name="module_validacao_msg_cnpj" value="{{ module_validacao_msg_cnpj }}" placeholder="" class="form-control" />
+                  {% if error_msg_cnpj %}
+                  <div class="text-danger">{{ error_msg_cnpj }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><span class="text-danger">*</span> <strong>{{ entry_msg_cpf }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_msg_cpf }}</span>
+                </div>
+                <div class="col-sm-9">
+                  <input type="text" name="module_validacao_msg_cpf" value="{{ module_validacao_msg_cpf }}" placeholder="" class="form-control" />
+                  {% if error_msg_cpf %}
+                  <div class="text-danger">{{ error_msg_cpf }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><span class="text-danger">*</span> <strong>{{ entry_msg_cpf_existe }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_msg_cpf_existe }}</span>
+                </div>
+                <div class="col-sm-9">
+                  <input type="text" name="module_validacao_msg_cpf_existe" value="{{ module_validacao_msg_cpf_existe }}" placeholder="" class="form-control" />
+                  {% if error_msg_cpf_existe %}
+                  <div class="text-danger">{{ error_msg_cpf_existe }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><span class="text-danger">*</span> <strong>{{ entry_msg_nascimento }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_msg_nascimento }}</span>
+                </div>
+                <div class="col-sm-9">
+                  <input type="text" name="module_validacao_msg_nascimento" value="{{ module_validacao_msg_nascimento }}" placeholder="" class="form-control" />
+                  {% if error_msg_nascimento %}
+                  <div class="text-danger">{{ error_msg_nascimento }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><span class="text-danger">*</span> <strong>{{ entry_msg_maior_18_anos }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_msg_maior_18_anos }}</span>
+                </div>
+                <div class="col-sm-9">
+                  <input type="text" name="module_validacao_msg_maior_18_anos" value="{{ module_validacao_msg_maior_18_anos }}" placeholder="" class="form-control" />
+                  {% if error_msg_maior_18_anos %}
+                  <div class="text-danger">{{ error_msg_maior_18_anos }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><span class="text-danger">*</span> <strong>{{ entry_msg_celular }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_msg_celular }}</span>
+                </div>
+                <div class="col-sm-9">
+                  <input type="text" name="module_validacao_msg_celular" value="{{ module_validacao_msg_celular }}" placeholder="" class="form-control" />
+                  {% if error_msg_celular %}
+                  <div class="text-danger">{{ error_msg_celular }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><span class="text-danger">*</span> <strong>{{ entry_msg_bairro }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_msg_bairro }}</span>
+                </div>
+                <div class="col-sm-9">
+                  <input type="text" name="module_validacao_msg_bairro" value="{{ module_validacao_msg_bairro }}" placeholder="" class="form-control" />
+                  {% if error_msg_bairro %}
+                  <div class="text-danger">{{ error_msg_bairro }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-3">
+                  <h5><span class="text-danger">*</span> <strong>{{ entry_msg_numero }}</strong></h5>
+                  <span class="help"><i class="fa fa-info-circle"></i> {{ help_msg_numero }}</span>
+                </div>
+                <div class="col-sm-9">
+                  <input type="text" name="module_validacao_msg_numero" value="{{ module_validacao_msg_numero }}" placeholder="" class="form-control" />
+                  {% if error_msg_numero %}
+                  <div class="text-danger">{{ error_msg_numero }}</div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{{ footer }}

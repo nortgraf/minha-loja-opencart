@@ -1,0 +1,284 @@
+<div class="pull-right">
+<div class="btn-group">
+  <button type="button" class="btn btn-primary btn-toggle" data-toggle="dropdown" id="btn-melhor-envio">
+    {{ text_melhor_envio }}
+    <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu">
+    {% if not melhor_envio.order_id %}
+    <li class="pull-left">
+      <button type="button" class="btn" onclick='MelhorEnvio.cart()'>
+        <i class="fa fa-truck"></i>
+        {{ button_cart }}
+      </button>
+    </li>
+    {% else %}
+    {% if melhor_envio.status == 'pending' or melhor_envio.status == 'canceled' %}
+    <li class="pull-left">
+      <button type="button" class="btn" onclick='MelhorEnvio.remove()'>
+        <i class="fa fa-trash"></i>
+        {{ button_remove }}
+      </button>
+    </li>
+    {% endif %}
+    <li class="pull-left">
+      <button type="button" class="btn" onclick='MelhorEnvio.preview()'>
+        <i class="fa fa-tag"></i>
+        {{ button_preview }}
+      </button>
+    </li>
+    <li class="pull-left">
+      <button type="button" class="btn" onclick='MelhorEnvio.tracking()'>
+        <i class="fa fa-map-marker"></i>
+        {{ button_tracking }}
+      </button>
+    </li>
+    {% endif %}
+  </ul>
+</div>
+<div class="modal fade" tabindex="-1" role="dialog" id="modal-melhor-envio-cart">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"></h4>
+      </div>
+      <div class="modal-body form-horizontal">
+        <div class="alert alert-info"><i class="fa fa-info-circle"></i> {{ info_order_cart }}</div>
+        <div class="form-group">
+          <div class="control-label col-sm-3"><b>{{ text_order_nfe_key }}</b></div>
+          <div class="col-sm-9">
+            <input type="text" name="order_nfe_key" class="form-control" maxlength="44" />
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="control-label col-sm-3"><b>{{ text_order_insurance }}</b></div>
+          <div class="col-sm-4">
+            <select name="order_insurance" class="form-control">
+              <option value="1">{{ text_yes }}</option>
+              <option value="0">{{ text_no }}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">{{ button_close }}</button>
+        <button type="button" class="btn btn-primary save-changes">{{ button_confirm }}</button>
+      </div>
+    </div>
+  </div>
+</div>
+<style>
+  .dropdown-menu>li>button {
+    background: transparent;
+    display: block;
+    padding: 5px 20px;
+    clear: both;
+    font-weight: normal;
+    line-height: 1.428571429;
+    color: #333;
+    white-space: nowrap;
+  }
+</style>
+<script>
+  const MelhorEnvio = {
+    info: {
+      order_id: getURLVar('order_id'),
+      melhor_envio_id: '{{ melhor_envio.melhor_envio_id ? melhor_envio.melhor_envio_id : '' }}',
+    }
+  };
+
+  MelhorEnvio.cart = () => {
+    const modalAddCart = $('#modal-melhor-envio-cart');
+    const modalHeading = `{{ text_order_id }} ${getURLVar('order_id')}`;
+
+    $(modalAddCart).find('h4.modal-title').text(modalHeading);
+    $(modalAddCart).find('input[name="order_nfe_key"]').val('');
+    $(modalAddCart).find('select[name="order_insurance"]').val('1');
+
+    $(modalAddCart).find('.save-changes').unbind('click').on('click', function () {
+      const orderNfeKey = $(modalAddCart).find('input[name="order_nfe_key"]').val();
+      const orderInsurance = $(modalAddCart).find('select[name="order_insurance"]').val();
+
+      $(modalAddCart).modal('hide');
+
+      const dialogWait = bootbox.dialog({
+        message: '<div class="text-center"><i class="fa fa-spin fa-spinner"></i> {{ text_wait }}</div>',
+        closeButton: false
+      });
+
+      const data = new FormData();
+      data.append('order_id', getURLVar('order_id'));
+      data.append('order_nfe_key', orderNfeKey);
+      data.append('order_insurance', orderInsurance);
+
+      $.ajax({
+        url: `index.php?route=extension/melhor_envio/shipment/cart&user_token=${getURLVar('user_token')}`,
+        method: 'POST',
+        dataType: 'JSON',
+        data,
+        processData: false,
+        contentType: false,
+        success: function (result) {
+          let dialog = {};
+
+          if (result.success) {
+            dialog = {
+              title: '<i class="fa fa-check-circle"></i> {{ text_title_success }}',
+              message: '{{ text_requested_success }}'.replace(/%d/g, getURLVar('order_id'))
+            };
+
+            MelhorEnvio.info.melhor_envio_id = result.melhor_envio_id;
+
+            $('#btn-melhor-envio ~ ul').empty().html(`
+              <li class="pull-left">
+                <button type="button" class="btn" onclick='MelhorEnvio.remove()'>
+                  <i class="fa fa-trash"></i>
+                  {{ button_remove }}
+                </button>
+              </li>
+              <li class="pull-left">
+                <button type="button" class="btn" onclick='MelhorEnvio.preview()'>
+                  <i class="fa fa-tag"></i>
+                  {{ button_preview }}
+                </button>
+              </li>
+              <li class="pull-left">
+                <button type="button" class="btn" onclick='MelhorEnvio.tracking()'>
+                  <i class="fa fa-map-marker"></i>
+                  {{ button_tracking }}
+                </button>
+              </li>
+            `);
+          } else if (result?.error?.message) {
+            dialog = {
+              title: '<i class="fa fa-check-exclamation-circle"></i> {{ text_title_errors }}',
+              message: result.error.message
+            };
+          } else {
+            dialog = {
+              title: '<i class="fa fa-check-exclamation-circle"></i> {{ text_title_errors }}',
+              message: '{{ error_requested_failed }}'
+            };
+          }
+
+          dialogWait.modal('hide');
+
+          bootbox.alert({
+            title: dialog.title,
+            message: `<div class="text-center">${dialog.message}</div>`
+          });
+        },
+        complete: function () {
+          dialogWait.modal('hide');
+        }
+      })
+    })
+
+    $(modalAddCart).modal('show');
+  }
+
+  MelhorEnvio.preview = () => {
+    const anchor = document.createElement('a');
+    anchor.href = `index.php?route=extension/melhor_envio/shipment/preview&melhor_envio_id=${MelhorEnvio.info.melhor_envio_id}&user_token=${getURLVar('user_token')}`;
+    anchor.target = '_blank';
+    anchor.click();
+    anchor.remove();
+  }
+
+  MelhorEnvio.tracking = () => {
+    const dialog = bootbox.dialog({
+      message: '<div class="text-center"><i class="fa fa-spin fa-spinner"></i> {{ text_wait }}</div>',
+      closeButton: false
+    });
+
+    $('<div></div>').load(`index.php?route=extension/melhor_envio/shipment/tracking&melhor_envio_id=${MelhorEnvio.info.melhor_envio_id}&user_token=${getURLVar('user_token')}`, function (response) {
+      $('body').append(response);
+
+      const modalTracking = $('#modal-melhor-envio-cart');
+      const modalHeading = `{{ text_order_id }} ${getURLVar('order_id')}`;
+
+      $(modalTracking).find('h4.modal-title').text(modalHeading);
+
+      $('#modal-melhor-envio-tracking').modal('show');
+
+      dialog.modal('hide');
+    });
+  }
+
+  MelhorEnvio.remove = () => {
+    bootbox.confirm({
+      title: '{{ text_title_warning }}',
+      message: '{{ text_confirm_void }}',
+      buttons: {
+        confirm: { label: '<i class="fa fa-check"></i> {{ text_confirm_yes }}', className: 'btn-success' },
+        cancel: { label: '{{ text_no }}', className: 'btn-danger' }
+      },
+      callback: function (result) {
+        if (!result) {
+          return;
+        }
+
+        const dialogWait = bootbox.dialog({
+          message: '<div class="text-center"><i class="fa fa-spin fa-spinner"></i> {{ text_wait }}</div>',
+          closeButton: false
+        });
+
+        $.ajax({
+          url: `index.php?route=extension/melhor_envio/shipment/remove&melhor_envio_id=${MelhorEnvio.info.melhor_envio_id}&user_token=${getURLVar('user_token')}`,
+          method: 'GET',
+          dataType: 'JSON',
+          processData: false,
+          contentType: false,
+          success: function (result) {
+            let dialog = {};
+
+            if (result.success) {
+              dialog = {
+                title: '<i class="fa fa-check-circle"></i> {{ text_title_success }}',
+                message: '{{ text_removed_success }}'.replace(/%d/g, getURLVar('order_id'))
+              };
+
+              MelhorEnvio.info.melhor_envio_id = null;
+
+              $('#btn-melhor-envio ~ ul').empty().html(`
+                <li class="pull-left">
+                  <button type="button" class="btn" onclick='MelhorEnvio.cart()'>
+                    <i class="fa fa-truck"></i>
+                    {{ button_cart }}
+                  </button>
+                </li>
+              `);
+            } else if (result?.error?.message) {
+              dialog = {
+                title: '<i class="fa fa-check-exclamation-circle"></i> {{ text_title_errors }}',
+                message: result.error.message
+              };
+            } else {
+              dialog = {
+                title: '<i class="fa fa-check-exclamation-circle"></i> {{ text_title_errors }}',
+                message: '{{ error_removed_failed }}'
+              };
+            }
+
+            dialogWait.modal('hide');
+
+            bootbox.alert({
+              title: dialog.title,
+              message: `<div class="text-center">${dialog.message}</div>`
+            });
+
+            return result;
+          },
+          complete: function () {
+            dialogWait.modal('hide');
+          }
+        });
+      }
+    });
+  }
+
+  $(document.body).on('hidden.bs.modal', function() {
+    $('body').css('padding-right', '0');
+  });
+</script>

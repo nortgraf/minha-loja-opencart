@@ -1,0 +1,19 @@
+/**
+ * Installment Plan Info Module
+ *
+ * @author  Cuispi
+ * @version 2.4.4
+ * @license Commercial License
+ * @package admin
+ * @subpackage  admin.view.stylesheet.installment_plan_info
+ */
+
+/* Table of Content
+==================================================
+  #General
+
+
+/* #General
+================================================== */
+
+.note-editor {}

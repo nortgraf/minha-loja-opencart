@@ -1,0 +1,140 @@
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="pull-right">
+        <button type="submit" form="form-module" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+        <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a></div>
+      <h1>{{ heading_title }}</h1>
+      <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+        <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="container-fluid">
+    {% if error_warning %}
+    <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    {% endif %}
+    <div class="panel panel-default"> 
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3>
+      </div>
+      <div class="panel-body">
+        <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-module" class="form-horizontal">
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-prefix">{{ entry_prefix }}</label>
+            <div class="col-sm-10">
+              <input type="text" name="module_model_number_generator_multilang_prefix" value="{{ module_model_number_generator_multilang_prefix }}" placeholder="{{ entry_prefix }}" id="input-prefix" class="form-control" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-suffix">{{ entry_suffix }}</label>
+            <div class="col-sm-10">
+              <input type="text" name="module_model_number_generator_multilang_suffix" value="{{ module_model_number_generator_multilang_suffix }}" placeholder="{{ entry_suffix }}" id="input-suffix" class="form-control" />
+            </div>
+          </div>
+          <div class="form-group required">
+            <label class="col-sm-2 control-label" for="input-type">{{ entry_type }}</label>
+            <div class="col-sm-10">
+              <select name="module_model_number_generator_multilang_type" id="input-type" class="form-control">
+                <option value="" selected="selected">{{ text_select }}</option>
+                <option value="0" {% if module_model_number_generator_multilang_type == "0" %} selected="selected" {% endif %}>{{ entry_type_sequential }}</option>
+                <option value="1" {% if module_model_number_generator_multilang_type == "1" %} selected="selected" {% endif %}>{{ entry_type_random }}</option>
+                <option value="2" {% if module_model_number_generator_multilang_type == "2" %} selected="selected" {% endif %}>{{ entry_type_datetime }}</option>
+              </select>
+              {% if error_module_model_number_generator_multilang_type %}
+              <div class="text-danger">{{ error_module_model_number_generator_multilang_type }}</div>
+              {% endif %}
+            </div>
+          </div>
+          <div id="form-input-lenght" class="form-group required" 
+            {% if module_model_number_generator_multilang_type == "0" or module_model_number_generator_multilang_type == "1" %}
+            style="display:block;"
+            {% else %}
+            style="display:none;"
+            {% endif %} 
+            >
+            <label class="col-sm-2 control-label" for="input-type">{{ entry_lenght }}</label>
+            <div class="col-sm-10">
+              <input type="text" name="module_model_number_generator_multilang_lenght" value="{{ module_model_number_generator_multilang_lenght }}" placeholder="{{ entry_lenght }}" id="input-lenght" class="form-control" />
+              {% if error_module_model_number_generator_multilang_lenght %}
+              <div class="text-danger">{{ error_module_model_number_generator_multilang_lenght }}</div>
+              {% endif %}
+            </div>
+          </div>
+          <div id="form-input-time-zone" class="form-group required" 
+            {% if module_model_number_generator_multilang_type == "2" %}
+            style="display:block;"
+            {% else %}
+            style="display:none;"
+            {% endif %} 
+            >
+            <label class="col-sm-2 control-label" for="input-time-zone">{{ entry_time_zone }}</label>
+            <div class="col-sm-10">
+              <select name="module_model_number_generator_multilang_time_zone" id="input-time-zone" class="form-control">
+                <option value="0" {% if module_model_number_generator_multilang_time_zone == "0" %} selected="selected" {% endif %}>{{ text_default }}</option>
+                {% for item in time_zone_list %}
+                <option value={{item}} {% if module_model_number_generator_multilang_time_zone == item %} selected="selected" {% endif %}>{{item}}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label"><span data-toggle="tooltip" title="{{ help_autocomplete }}">{{ entry_autocomplete }}</span></label>
+            <div class="col-sm-10">
+              <label class="radio-inline">
+                <input type="radio" name="module_model_number_generator_multilang_automatic" value="1" {% if module_model_number_generator_multilang_automatic == "1" %} checked="checked" {% endif %}/>
+                {{ text_yes }}
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="module_model_number_generator_multilang_automatic" value="0" {% if module_model_number_generator_multilang_automatic != "1" %} checked="checked" {% endif %}/>
+                {{ text_no }}
+              </label>              
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label"><span data-toggle="tooltip" title="{{ help_duplicate }}">{{ entry_duplicate }}</span></label>
+            <div class="col-sm-10">
+              <label class="radio-inline">
+                <input type="radio" name="module_model_number_generator_multilang_duplicate" value="1" {% if module_model_number_generator_multilang_duplicate == "1" %} checked="checked" {% endif %}/>
+                {{ text_yes }}
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="module_model_number_generator_multilang_duplicate" value="0" {% if module_model_number_generator_multilang_duplicate != "1" %} checked="checked" {% endif %}/>
+                {{ text_no }}
+              </label> 
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-status">{{ entry_status }}</label>
+            <div class="col-sm-10">
+              <select name="module_model_number_generator_multilang_status" id="input-status" class="form-control">
+                <option value="1" {% if module_model_number_generator_multilang_status == "1" %} selected="selected" {% endif %}>{{ text_enabled }}</option>
+                <option value="0" {% if module_model_number_generator_multilang_status != "1" %} selected="selected" {% endif %}>{{ text_disabled }}</option>
+              </select>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript"><!--
+$(document).on('change', 'select[name=\'module_model_number_generator_multilang_type\']', function() {
+  if(this.value == 0 || this.value == 1) {
+    $("#form-input-lenght").css("display", "block")
+  } else {
+    $("#form-input-lenght").css("display", "none")
+  }
+  if(this.value == 2) {
+    $("#form-input-time-zone").css("display", "block")
+  } else {
+    $("#form-input-time-zone").css("display", "none")
+  }
+});
+//--></script>
+{{ footer }}

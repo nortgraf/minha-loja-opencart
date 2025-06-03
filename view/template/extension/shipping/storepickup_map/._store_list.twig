@@ -1,0 +1,348 @@
+{# 
+ StorePickup Map
+ Premium Extension
+ 
+ Copyright (c) 2013 - 2019 Adikon.eu
+ http://www.adikon.eu/
+ 
+ You may not copy or reuse code within this file without written permission. #}
+
+{{ header }}{{ column_left }}
+<div id="content">
+	<div class="page-header">
+		<div class="container-fluid">
+			<div class="pull-right">
+				<a href="{{ add }}" data-toggle="tooltip" title="{{ button_add }}" class="btn btn-primary"><i class="fa fa-plus"></i></a>
+				<a href="{{ export }}" data-toggle="tooltip" title="{{ button_export }}" class="btn btn-info"><i class="fa fa-download"></i></a>
+				<button type="button" id="button-import" data-loading-text="{{ text_loading }}" data-toggle="tooltip" title="{{ button_import }}" class="btn btn-info"><i class="fa fa-upload"></i></button>
+			</div>
+			{% if links %}
+			<div class="btn-group manage-link">
+				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></button>
+				<ul class="dropdown-menu">
+					{% for manage_link in links %}
+					{% if manage_link.name %}
+					<li><a href="{{ manage_link.href }}">{{ manage_link.name }}</a></li>
+					{% else %} 
+					<li class="divider"></li>
+					{% endif %}
+					{% endfor %}
+				</ul>
+			</div>
+			{% endif %}
+			<h1>{{ heading_title }}</h1>
+		</div>
+	</div>
+	<div class="container-fluid">
+		{% if error_warning %}
+		<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+			<button type="button" class="close" data-dismiss="alert">&times;</button>
+		</div>
+		{% endif %}
+		{% if success %}
+		<div class="alert alert-success"><i class="fa fa-check-circle"></i> {{ success }}
+			<button type="button" class="close" data-dismiss="alert">&times;</button>
+		</div>
+		{% endif %}
+		{% if process %}
+		<div class="alert alert-info"><i class="fa fa-check-circle"></i> {{ process }}
+			<button type="button" class="close" data-dismiss="alert">&times;</button>
+		</div>
+		{% endif %}
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<div class="btn-group pull-right">
+					<button type="button" data-toggle="modal" data-target="#storeFilterModal" class="btn btn-warning btn-sm"><span data-toggle="tooltip" title="{{ button_filter }}"><i class="fa fa-search fa-fw"></i></span></button>
+					<button type="button" data-toggle="tooltip" title="{{ button_reset }}" class="btn btn-default btn-sm" onclick="location = 'index.php?route={{ module_path }}/store&{{ token }}';"><i class="fa fa-times fa-fw"></i></button>
+				</div>
+				<h3 class="panel-title"><i class="fa fa-list"></i> {{ text_list }}</h3>
+			</div>
+			<div class="panel-body">
+				<form action="{{ delete }}" method="post" enctype="multipart/form-data" id="form-store" class="form-horizontal">
+					<div class="table-responsive">
+						<table class="table table-bordered table-hover">
+							<thead>
+								<tr>
+									<td style="width: 1px;" class="text-center"><button type="button" form="form-store" formaction="{{ delete }}" data-toggle="tooltip" title="{{ button_delete }}" class="btn btn-danger btn-xs" onclick="confirm('{{ text_confirm }}') ? $('#form-store').submit() : false;"><i class="fa fa-trash-o"></i></button></td>
+									<td style="width: 20px;" class="text-center"><a href="{{ sort_id }}" class="{{ sort == 's.storepickup_id' ? order|lower : '' }}">{{ column_id }}</a></td>
+									<td class="text-left"><a href="{{ sort_name }}" class="{{ sort == 's.name' ? order|lower : '' }}">{{ column_name }}</a></td>
+									<td class="text-left">{{ column_address }}</td>
+									<td class="text-left"><a href="{{ sort_city }}" class="{{ sort == 's.city' ? order|lower : '' }}">{{ column_city }}</a></td>
+									<td class="text-right"><a href="{{ sort_cost }}" class="{{ sort == 's.cost' ? order|lower : '' }}">{{ column_cost }}</a></td>
+									<td class="text-right"><a href="{{ sort_sort_order }}" class="{{ sort == 's.sort_order' ? order|lower : '' }}">{{ column_sort_order }}</a></td>
+									<td class="text-left"><a href="{{ sort_status }}" class="{{ sort == 's.status' ? order|lower : '' }}">{{ column_status }}</a><a id="button-status" class="text-danger pull-right">[{{ button_save }}]</i></a></td>
+									<td class="text-right"><a href="{{ sort_date_added }}" class="{{ sort == 's.date_added' ? order|lower : '' }}">{{ column_date_added }}</a></td>
+									<td class="text-right"></td>
+								</tr>
+							</thead>
+							<tbody>
+								{% if locations %}
+								{% for location in locations %}
+								<tr data-store-id="{{ location.storepickup_id }}">
+									<td class="text-center"><input type="checkbox" name="selected[]" value="{{ location.storepickup_id }}" /></td>
+									<td class="text-center">{{ location.storepickup_id }}</td>
+									<td class="text-left">{{ location.name }}</td>
+									<td class="text-left">{{ location.address }}</td>
+									<td class="text-left">{{ location.city }}</td>
+									<td class="text-right">{{ location.cost }}</td>
+									<td class="text-right">{{ location.sort_order }}</td>
+									<td class="text-left"><select name="status[{{ location.storepickup_id }}]" class="form-control">
+										{% if location.status == '1' %}
+										<option value="1" selected="selected">{{ text_enabled }}</option>
+										<option value="0">{{ text_disabled }}</option>
+										{% else %} 
+										<option value="1">{{ text_enabled }}</option>
+										<option value="0" selected="selected">{{ text_disabled }}</option>
+										{% endif %}
+									</select></td>
+									<td class="text-right">{{ location.date_added }}</td>
+									<td class="text-right"><a href="{{ location.edit }}" data-toggle="tooltip" title="{{ button_edit }}" class="btn btn-primary"><i class="fa fa-pencil"></i></a></td>
+								</tr>
+								{% endfor %}
+								{% else %} 
+								<tr>
+									<td class="text-center" colspan="10">{{ text_no_results }}</td>
+								</tr>
+								{% endif %}
+							</tbody>
+						</table>
+					</div>
+				</form>
+				<div class="row">
+					<div class="col-sm-6 text-left">{{ pagination }}</div>
+					<div class="col-sm-6 text-right">{{ results }}</div>
+				</div>
+				<div class="modal fade" id="storeFilterModal" tabindex="-1" role="dialog">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-body">
+								<div class="row">
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="control-label">{{ entry_name }}</label>
+											<input type="text" name="filter_name" value="{{ filter_name }}" placeholder="{{ entry_name }}" class="form-control" />
+										</div>
+										<div class="form-group">
+											<label class="control-label">{{ entry_address }}</label>
+											<input type="text" name="filter_address" value="{{ filter_address }}" placeholder="{{ entry_address }}" class="form-control" />
+										</div>
+										<div class="form-group">
+											<label class="control-label">{{ entry_country }}</label>
+											<select name="filter_country_id" class="form-control">
+												<option value="*"></option>
+												{% for country in countries %}
+												{% if country.country_id == filter_country_id %}
+												<option value="{{ country.country_id }}" selected="selected">{{ country.name }}</option>
+												{% else %} 
+												<option value="{{ country.country_id }}">{{ country.name }}</option>
+												{% endif %}
+												{% endfor %}
+											</select>
+										</div>
+									</div>
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="control-label">{{ entry_store }}</label>
+											<select name="filter_store_id" class="form-control">
+												<option value="*"></option>
+												{% for store in stores %}
+												{% if store.store_id == filter_store_id %}
+												<option value="{{ store.store_id }}" selected="selected">{{ store.name }}</option>
+												{% else %} 
+												<option value="{{ store.store_id }}">{{ store.name }}</option>
+												{% endif %}
+												{% endfor %}
+											</select>
+										</div>
+										<div class="form-group">
+											<label class="control-label">{{ entry_date_added }}</label>
+											<div class="input-group date">
+												<input type="text" name="filter_date_added" value="{{ filter_date_added }}" placeholder="{{ entry_date_added }}" data-date-format="YYYY-MM-DD" class="form-control" />
+												<span class="input-group-btn">
+													<button class="btn btn-default" type="button"><i class="fa fa-calendar"></i></button>
+												</span>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="control-label">{{ entry_status }}</label>
+											<select name="filter_status" class="form-control">
+												<option value="*"></option>
+												{% if filter_status == '1' %}
+												<option value="1" selected="selected">{{ text_enabled }}</option>
+												{% else %} 
+												<option value="1">{{ text_enabled }}</option>
+												{% endif %}
+												{% if filter_status == '0' %}
+												<option value="0" selected="selected">{{ text_disabled }}</option>
+												{% else %} 
+												<option value="0">{{ text_disabled }}</option>
+												{% endif %}
+											</select>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn btn-link" data-dismiss="modal">{{ button_close }}</button>
+								<button type="button" id="button-filter" class="btn btn-primary">{{ button_filter }}</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-12 text-center">
+			<br />Adikon.eu, All Rights Reserved.
+		</div>
+	</div>
+<script type="text/javascript"><!--
+function getFilter(id) {
+	filter_param = [];
+
+	$(id + ' :input').each(function() {
+		var $name = $(this).attr('name') + '';
+		var $value = $(this).val();
+
+		if ($name.indexOf('filter_') !== -1) {
+			if (this.type == 'select-one') {
+				if ($value != '*') {
+					filter_param.push($name + '=' + encodeURIComponent($value));
+				}
+			} else if (this.type == 'checkbox' || this.type == 'radio') {
+				if ($(this).is(':checked')) {
+					filter_param.push($name + '=' + encodeURIComponent($value));
+				}
+			} else {
+				if ($value) {
+					filter_param.push($name + '=' + encodeURIComponent($value));
+				}
+			}
+		}
+	});
+
+	return filter_param.join('&');
+}
+
+$('#button-filter').on('click', function() {
+	filter = getFilter('#storeFilterModal');
+
+	location = 'index.php?route={{ module_path }}/store&{{ token }}&' + filter;
+});
+//--></script>
+<script type="text/javascript"><!--
+$(document).delegate('#button-status', 'click', function() {
+	$.ajax({
+		url: 'index.php?route={{ module_path }}/store/status&{{ token }}&format=raw',
+		type: 'post',
+		dataType: 'json',
+		data: $('#form-store select'),
+		beforeSend: function() {
+			$('#button-status').html('<i class="fa fa-spinner fa-spin"></i>');
+		},
+		complete: function() {
+			$('#button-status').html('[{{ button_save }}]');
+		},
+		success: function(json) {
+			$('.alert').remove();
+
+			if (json['error']) {
+				$('#content > .container-fluid').prepend('<div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> ' + json['error'] + '</div>');
+			}
+
+			if (json['success']) {
+				$('#content > .container-fluid').prepend('<div class="alert alert-success alert-dismissible"><i class="fa fa-check-circle"></i> ' + json['success'] + '</div>');
+			}
+		},
+		error: function(xhr, ajaxOptions, thrownError) {
+			alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+		}
+	});
+});
+
+$(document).delegate('#button-process', 'click', function() {
+	var skip = prompt("{{ text_skip }}", "0");
+
+	if (skip != null) {
+		$(this).html('<i class="fa fa-spinner fa-spin"></i>');
+
+		$.ajax({
+			url: 'index.php?route={{ module_path }}/store/import&{{ token }}&skip=' + skip + '&format=raw',
+			type: 'post',
+			dataType: 'json',
+			success: function(json) {
+				$('.alert-info').remove();
+
+				if (json['error']) {
+					alert(json['error']);
+				}
+
+				if (json['success']) {
+					alert(json['success']);
+				}
+			}
+		});
+	}
+});
+//--></script>
+<script type="text/javascript"><!--
+$('#button-import').on('click', function() {
+	var skip = prompt("{{ text_skip }}", "0");
+
+	if (skip != null) {
+		$('#form-import').remove();
+
+		$('body').prepend('<form enctype="multipart/form-data" id="form-import" style="display: none;"><input type="file" name="file" /></form>');
+
+		$('#form-import input[name=\'file\']').trigger('click');
+
+		if (typeof timer != 'undefined') {
+			clearInterval(timer);
+		}
+
+		timer = setInterval(function() {
+			if ($('#form-import input[name=\'file\']').val() != '') {
+				clearInterval(timer);
+
+				$.ajax({
+					url: 'index.php?route={{ module_path }}/store/import&{{ token }}&reset=1&skip=' + skip,
+					type: 'post',
+					dataType: 'json',
+					data: new FormData($('#form-import')[0]),
+					cache: false,
+					contentType: false,
+					processData: false,
+					beforeSend: function() {
+						$('#button-import').button('loading');
+					},
+					complete: function() {
+						$('#button-import').button('reset');
+					},
+					success: function(json) {
+						$('.alert').remove();
+
+						if (json['error']) {
+							alert(json['error']);
+						}
+
+						if (json['success']) {
+							filter = getFilter('#storeFilterModal');
+
+							location = 'index.php?route={{ module_path }}/store&{{ token }}&' + filter;
+						}
+					},
+					error: function(xhr, ajaxOptions, thrownError) {
+						alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+					}
+				});
+			}
+		}, 500);
+	}
+});
+//--></script>
+<script type="text/javascript"><!--
+$('.date').datetimepicker({
+	pickTime: false
+});
+//--></script>
+</div>
+{{ footer }}

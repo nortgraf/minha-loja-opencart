@@ -1,0 +1,483 @@
+{{ header }} 
+
+<link href="view/javascript/summernote/summernote.css" rel="stylesheet" />
+
+<script type="text/javascript" src="view/javascript/summernote/summernote.js"></script>
+<script type="text/javascript" src="view/javascript/summernote/opencart.js"></script>
+
+{{ column_left }} 
+
+<div id="content">
+<div class="page-header">
+<div class="container-fluid">
+<div class="pull-right">
+<button type="submit" form="form-account" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i> Salvar</button>
+</div>
+<h1>{{ heading_title }}</h1>
+<ul class="breadcrumb">
+{% for breadcrumb in breadcrumbs %} 
+<li><a href="{{ breadcrumb['href'] }}">{{ breadcrumb['text'] }}</a></li>
+{% endfor %} 
+</ul>
+</div>
+</div>
+
+<div class="container-fluid">
+
+{% if (erro_permissao is defined and erro_permissao) %} 
+<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ erro_permissao }}
+<button type="button" class="close" data-dismiss="alert">&times;</button>
+</div>
+{% endif %} 
+
+{% if (salvos is defined and salvos) %} 
+<div class="alert alert-success"><i class="fa fa-exclamation-circle"></i> Dados salvos com sucesso!
+<button type="button" class="close" data-dismiss="alert">&times;</button>
+</div>
+{% endif %} 
+
+<div class="panel panel-default">
+<div class="panel-heading">
+<h3 class="panel-title"><i class="fa fa-cog"></i> Configura&ccedil;&otilde;es</h3>
+</div>
+<div class="panel-body">
+
+<form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-account" class="form-horizontal">
+
+<div role="tabpanel">
+
+	<!-- Nav tabs -->
+	<ul class="nav nav-tabs" role="tablist">
+	<li role="presentation" class="active"><a href="#configuracoes" aria-controls="configuracoes" role="tab" data-toggle="tab">Geral</a></li>
+	<li role="presentation"><a href="#campos" aria-controls="sobre" role="tab" data-toggle="tab">Campos Customizados</a></li>
+	<li role="presentation"><a href="#facebook" aria-controls="sobre" role="tab" data-toggle="tab">Facebook Login</a></li>
+	<li role="presentation"><a href="#checkout" aria-controls="sobre" role="tab" data-toggle="tab">Checkout</a></li>
+	<li role="presentation"><a href="#custom" aria-controls="sobre" role="tab" data-toggle="tab">Custom CSS e JS</a></li>
+	<li role="presentation"><a href="#pagamento" aria-controls="pagamento" role="tab" data-toggle="tab">Meios Pagamento</a></li>
+	</ul>
+
+<div class="tab-content">
+
+	<div role="tabpanel" class="tab-pane active" id="configuracoes">
+	<div class="form-group">
+	<label class="col-sm-3 control-label" for="input-status">{{ entry_status }}</label>
+	<div class="col-sm-9">
+	<select name="module_compraexpress_status" id="input-status" class="form-control">
+	{% if (module_compraexpress_status) %} 
+	<option value="1" selected="selected">{{ text_enabled }}</option>
+	<option value="0">{{ text_disabled }}</option>
+	{% else %} 
+	<option value="1">{{ text_enabled }}</option>
+	<option value="0" selected="selected">{{ text_disabled }}</option>
+	{% endif %} 
+	</select>
+	<span id="helpBlock" class="help-block">Ative se deseja ou n&atilde;o ativar o checkout na loja.</span>
+	</div>
+	</div>
+	
+	<div class="form-group">
+	<label class="col-sm-3 control-label" for="input-status">Captchar no Cadastro</label>
+	<div class="col-sm-9">
+	<select name="module_compraexpress_captchar" id="input-status" class="form-control">
+	{% if (module_compraexpress_captchar) %} 
+	<option value="1" selected="selected">{{ text_enabled }}</option>
+	<option value="0">{{ text_disabled }}</option>
+	{% else %} 
+	<option value="1">{{ text_enabled }}</option>
+	<option value="0" selected="selected">{{ text_disabled }}</option>
+	{% endif %} 
+	</select>
+	<span id="helpBlock" class="help-block">Ative captchar no cadastrosa de sua loja.</span>
+	</div>
+	</div>
+
+	</div>
+
+	<div role="tabpanel" class="tab-pane" id="checkout">
+	<div class="form-group">
+	<label class="col-sm-3 control-label" for="input-status">&nbsp;</label>
+	<div class="col-sm-9">
+	<div class="alert alert-info" role="alert">Op&ccedil;&otilde;es Checkout Express.</div>
+	</div>
+	</div>
+
+	<div class="form-group">
+	<label class="col-sm-3 control-label" for="input-status">Checkout sem Login</label>
+	<div class="col-sm-9">
+	<select name="module_compraexpress_log" id="input-status" class="form-control">
+	{% if (module_compraexpress_log) %} 
+	<option value="1" selected="selected">{{ text_enabled }}</option>
+	<option value="0">{{ text_disabled }}</option>
+	{% else %} 
+	<option value="1">{{ text_enabled }}</option>
+	<option value="0" selected="selected">{{ text_disabled }}</option>
+	{% endif %} 
+	</select>
+	<span id="helpBlock" class="help-block">Ativa o checkout sem login apenas informado o e-mail cadastrado na loja (exibe dados mascarados).</span>
+	</div>
+	</div>
+
+	<div class="form-group">
+	<label class="col-sm-3 control-label" for="input-status">Permitir Comentario</label>
+	<div class="col-sm-9">
+	<select name="module_compraexpress_com" id="input-status" class="form-control">
+	{% if (module_compraexpress_com) %} 
+	<option value="1" selected="selected">{{ text_enabled }}</option>
+	<option value="0">{{ text_disabled }}</option>
+	{% else %} 
+	<option value="1">{{ text_enabled }}</option>
+	<option value="0" selected="selected">{{ text_disabled }}</option>
+	{% endif %} 
+	</select>
+	<span id="helpBlock" class="help-block">Permitir o cliente informar comentarios ou notas ao pagar.</span>
+	</div>
+	</div>
+
+	<div class="form-group">
+	<label class="col-sm-3 control-label" for="input-status">Redirecionar Checkout ao Comprar</label>
+	<div class="col-sm-9">
+	<select name="module_compraexpress_redirecionar" id="input-status" class="form-control">
+	{% if (module_compraexpress_redirecionar) %} 
+	<option value="1" selected="selected">{{ text_enabled }}</option>
+	<option value="0">{{ text_disabled }}</option>
+	{% else %} 
+	<option value="1">{{ text_enabled }}</option>
+	<option value="0" selected="selected">{{ text_disabled }}</option>
+	{% endif %} 
+	</select>
+	<span id="helpBlock" class="help-block">Ative o redirecionamento direto ao checkout quando adicionar um item ao carrinho.</span>
+	</div>
+	</div>
+	
+	<div class="form-group">
+	<label class="col-sm-3 control-label" for="input-status">Exibir Erros</label>
+	<div class="col-sm-9">
+	<select name="module_compraexpress_erro" id="input-status" class="form-control">
+	{% if (module_compraexpress_erro) %} 
+	<option value="1" selected="selected">Inline (direto no form)</option>
+	<option value="0">Popup Modal</option>
+	{% else %} 
+	<option value="1">Inline (direto no form)</option>
+	<option value="0" selected="selected">Popup Modal</option>
+	{% endif %} 
+	</select>
+	<span id="helpBlock" class="help-block">Formato da exibi&ccedil;&atilde;o de erros no cadastro e checkout da loja.</span>
+	</div>
+	</div>
+
+	<div class="form-group">
+	<label class="col-sm-3 control-label" for="input-status">Modelo Checkout</label>
+	<div class="col-sm-9">
+	<select name="module_compraexpress_modelo" id="input-status" class="form-control">
+	{% if (module_compraexpress_modelo) %} 
+	<option value="1" selected="selected">Modelo 01</option>
+	<option value="0">Modelo 02</option>
+	{% else %} 
+	<option value="1">Modelo 01</option>
+	<option value="0" selected="selected">Modelo 02</option>
+	{% endif %} 
+	</select>
+	<span id="helpBlock" class="help-block">Modelo do checkout que deseja usar.</span>
+	</div>
+	</div>
+	
+	<div class="form-group">
+	<label class="col-sm-3 control-label" for="input-status">Exibir Etapas</label>
+	<div class="col-sm-9">
+	<select name="module_compraexpress_resumido" id="input-status" class="form-control">
+	{% if (module_compraexpress_resumido) %} 
+	<option value="1" selected="selected">{{ text_enabled }}</option>
+	<option value="0">{{ text_disabled }}</option>
+	{% else %} 
+	<option value="1">{{ text_enabled }}</option>
+	<option value="0" selected="selected">{{ text_disabled }}</option>
+	{% endif %} 
+	</select>
+	<span id="helpBlock" class="help-block">Ativa a exibir etapas no processo de cadastro, checkout na tela de sua loja (condicional ao tema usado).</span>
+	</div>
+	</div>
+
+	<div class="form-group">
+	<label class="col-sm-3 control-label" for="input-status">&nbsp;</label>
+	<div class="col-sm-9">
+	<div class="alert alert-info" role="alert">CSS, Topo e Rodap&eacute; Checkout Express.</div>
+	</div>
+	</div>
+
+	<div class="form-group">
+	<label class="col-sm-3 control-label" for="input-status">Topo e rodap&eacute;</label>
+	<div class="col-sm-9">
+	<select name="module_compraexpress_te" id="input-status" class="form-control">
+	{% if (module_compraexpress_te) %} 
+	<option value="1" selected="selected">Padr&atilde;o loja (layout usado na loja)</option>
+	<option value="0">Padr&atilde;o checkout (tema padr&atilde;o opencart)</option>
+	{% else %} 
+	<option value="1">Padr&atilde;o loja (layout usado na loja)</option>
+	<option value="0" selected="selected">Padr&atilde;o checkout (tema padr&atilde;o opencart)</option>
+	{% endif %} 
+	</select>
+	<span id="helpBlock" class="help-block">Visual do checkout e registro em sua loja.</span>
+	</div>
+	</div>
+
+	{% if (temas['themes'] is defined) %} 
+	<div class="form-group">
+	<label class="col-sm-3 control-label" for="input-status">Custom Layout (padr&atilde;o checkout)</label>
+	<div class="col-sm-9">
+	<select name="module_compraexpress_tema" id="input-status" class="form-control">
+	<option value="">Padr&atilde;o</option>
+	{% for k,v in temas['themes'] %} 
+	<option value="{{ v['cssCdn'] }}"{{ v['cssCdn'] == module_compraexpress_tema?' selected':'' }}>{{ v['name'] }}</option>
+	{% endfor %} 
+	</select>
+	<span id="helpBlock" class="help-block">Somente se usar "Padr&atilde;o checkout", visual do tema de acordo deseja usar.</span>
+	</div>
+	</div>
+	{% endif %} 
+
+		{% set selo_padrao = '<div style="text-align: left;"><span style="font-weight: bold;">COMPRE COM SEGURANÇA</span></div>
+	<div style="text-align: left;"><img src="'~constant('HTTPS_CATALOG')~'app/checkoutexpress/site-seguro.png" style="width: 184.5px; height: 87.573732718894px;"></div>' %}
+	{% set pag_padrao = '<p><span style="font-weight: bold;">FORMAS DE PAGAMENTO<br><img src="'~constant('HTTPS_CATALOG')~'app/checkoutexpress/formas-de-pagamento.png"><br><br>FORMAS DE ENTREGA<br><img src="'~constant('HTTPS_CATALOG')~'app/checkoutexpress/forma-envio.png" style="width: 254.5px; height: 29.5594900849858px;"><br></span></p>' %}
+	
+
+	<div class="form-group">
+	<label class="col-sm-3 control-label" for="input-description">HTML 1</label>
+	<div class="col-sm-9">
+	<textarea name="module_compraexpress_selos" id="selos" class="html_ok form-control">{{ module_compraexpress_selos is empty?selo_padrao:module_compraexpress_selos }} 
+	</textarea>
+	<span id="helpBlock" class="help-block">Somente se usar "Padr&atilde;o checkout".</span>
+	</div>
+	</div>
+
+
+	<div class="form-group">
+	<label class="col-sm-3 control-label" for="input-description">HTML 2</label>
+	<div class="col-sm-9">
+	<textarea name="module_compraexpress_pag" id="selos" class="html_ok form-control">{{ module_compraexpress_pag is empty?pag_padrao:module_compraexpress_pag }} 
+	</textarea>
+	<span id="helpBlock" class="help-block">Somente se usar "Padr&atilde;o checkout".</span>
+	</div>
+	</div>
+
+	</div>
+
+	<div role="tabpanel" class="tab-pane" id="facebook">
+	<div class="form-group">
+	<label class="col-sm-3 control-label" for="input-status">&nbsp;</label>
+	<div class="col-sm-9">
+	
+	</div>
+	</div>
+
+	<div class="form-group">
+	<label class="col-sm-3 control-label" for="input-status">Login Facebook</label>
+	<div class="col-sm-9">
+	<select name="module_compraexpress_fb" id="input-status" class="form-control">
+	{% if (module_compraexpress_fb) %} 
+	<option value="1" selected="selected">{{ text_enabled }}</option>
+	<option value="0">{{ text_disabled }}</option>
+	{% else %} 
+	<option value="1">{{ text_enabled }}</option>
+	<option value="0" selected="selected">{{ text_disabled }}</option>
+	{% endif %} 
+	</select>
+	<span id="helpBlock" class="help-block">Se deseja ativar login social facebook em sua loja, lembre-se que o app precisa ser configurado.</span>
+	</div>
+	</div>
+
+	<div class="form-group">
+	<label class="col-sm-3 control-label" for="input-status">APP ID</label>
+	<div class="col-sm-9">
+	<input type="text" class="form-control" name="module_compraexpress_fbid" value="{{ module_compraexpress_fbid }}">
+	<span id="helpBlock" class="help-block">O ID de seu app criado no facebook.</span>
+	</div>
+	</div>
+
+	<div class="form-group">
+	<label class="col-sm-3 control-label" for="input-status">APP Secret</label>
+	<div class="col-sm-9">
+	<input type="text" class="form-control" name="module_compraexpress_fbsec" value="{{ module_compraexpress_fbsec }}">
+	<span id="helpBlock" class="help-block">O Secret de seu app criado no facebook.</span>
+	</div>
+	</div>
+	</div>
+
+	<div role="tabpanel" class="tab-pane" id="custom">
+	<div class="form-group">
+	<label class="col-sm-3 control-label" for="input-status">&nbsp;</label>
+	<div class="col-sm-9">
+	<div class="alert alert-info" role="alert">Adicione CSS ou Javascript custom ao seu tema.</div>
+	</div>
+	</div>
+	<div class="form-group">
+	<label class="col-sm-3 control-label" for="input-status">Custom CSS</label>
+	<div class="col-sm-9">
+	<textarea class="form-control" style="height:180px;" name="module_compraexpress_css">{{ module_compraexpress_css }}</textarea>
+	<span id="helpBlock" class="help-block">N&atilde;o requer informar as tags &lt;styles&gt;&lt;/styles&gt;.</span>
+	</div>
+	</div>
+
+	<div class="form-group">
+	<label class="col-sm-3 control-label" for="input-description">Custom Javascript</label>
+	<div class="col-sm-9">
+	<textarea name="module_compraexpress_js" style="height:180px;" id="selos" class="form-control">{{ module_compraexpress_js }} 
+	</textarea>
+	<span id="helpBlock" class="help-block">N&atilde;o requer informar as tags &lt;script&gt;&lt;/script&gt;.</span>
+	</div>
+	</div>
+	</div>
+
+	<div role="tabpanel" class="tab-pane" id="campos">
+	<div class="form-group">
+	<label class="col-sm-3 control-label" for="input-status">&nbsp;</label>
+	<div class="col-sm-9">
+	<div class="alert alert-info" role="alert">Campos customizados em "Clientes" > "Campos customizados" criados em sua loja.</div>
+	</div>
+	</div>
+
+	<div class="form-group">
+	<label class="col-sm-3 control-label" for="input-status">Campo Conta > CPF</label>
+	<div class="col-sm-9">
+	<select name="module_compraexpress_fiscal" id="input-status" class="form-control">
+	<option value="">Selecione</option>
+	{% for k,v in campos %}
+	{% if (module_compraexpress_fiscal == v['custom_field_id']) %} 
+	<option value="{{ v['custom_field_id'] }}" selected="selected">{{ v['name'] }}</option>
+	{% else %} 
+	<option value="{{ v['custom_field_id'] }}">{{ v['name'] }}</option>
+	{% endif %} 
+	{% endfor %} 
+	</select>
+	<span id="helpBlock" class="help-block">Selecione o campo customizado correspondente caso o tenha na loja.</span>
+	</div>
+	</div>
+	
+	<div class="form-group">
+	<label class="col-sm-3 control-label" for="input-status">Campo Conta > CNPJ</label>
+	<div class="col-sm-9">
+	<select name="module_compraexpress_fiscal2" id="input-status" class="form-control">
+	<option value="">Selecione</option>
+	{% for k,v in campos %}
+	{% if (module_compraexpress_fiscal2 == v['custom_field_id']) %} 
+	<option value="{{ v['custom_field_id'] }}" selected="selected">{{ v['name'] }}</option>
+	{% else %} 
+	<option value="{{ v['custom_field_id'] }}">{{ v['name'] }}</option>
+	{% endif %} 
+	{% endfor %} 
+	</select>
+	<span id="helpBlock" class="help-block">Selecione o campo customizado correspondente caso o tenha na loja.</span>
+	</div>
+	</div>
+	
+	<div class="form-group">
+	<label class="col-sm-3 control-label" for="input-status">Unico CPF/CNPJ por Cadastro</label>
+	<div class="col-sm-9">
+	<select name="module_compraexpress_fiscal_unico" id="input-status" class="form-control">
+	{% if (module_compraexpress_fiscal_unico) %} 
+	<option value="1" selected="selected">{{ text_enabled }}</option>
+	<option value="0">{{ text_disabled }}</option>
+	{% else %} 
+	<option value="1">{{ text_enabled }}</option>
+	<option value="0" selected="selected">{{ text_disabled }}</option>
+	{% endif %} 
+	</select>
+	<span id="helpBlock" class="help-block">Permite que tenha apenas um unico CPF/CNPJ por cadastro na loja bloqueando registros duplicados.</span>
+	</div>
+	</div>
+
+	<div class="form-group">
+	<label class="col-sm-3 control-label" for="input-status">Campo Endere&ccedil;o > N&uacute;mero</label>
+	<div class="col-sm-9">
+	<select name="module_compraexpress_numero" id="input-status" class="form-control">
+	<option value="">Selecione</option>
+	{% for k,v in campos %}
+	{% if (module_compraexpress_numero == v['custom_field_id']) %} 
+	<option value="{{ v['custom_field_id'] }}" selected="selected">{{ v['name'] }}</option>
+	{% else %} 
+	<option value="{{ v['custom_field_id'] }}">{{ v['name'] }}</option>
+	{% endif %} 
+	{% endfor %} 
+	</select>
+	<span id="helpBlock" class="help-block">Selecione o campo customizado correspondente caso o tenha na loja.</span>
+	</div>
+	</div>
+
+	<div class="form-group">
+	<label class="col-sm-3 control-label" for="input-status">Campo Endere&ccedil;o > Complemento</label>
+	<div class="col-sm-9">
+	<select name="module_compraexpress_complemento" id="input-status" class="form-control">
+	<option value="">Selecione</option>
+	{% for k,v in campos %}
+	{% if (module_compraexpress_complemento == v['custom_field_id']) %} 
+	<option value="{{ v['custom_field_id'] }}" selected="selected">{{ v['name'] }}</option>
+	{% else %} 
+	<option value="{{ v['custom_field_id'] }}">{{ v['name'] }}</option>
+	{% endif %} 
+	{% endfor %} 
+	</select>
+	<span id="helpBlock" class="help-block">Selecione o campo customizado correspondente caso o tenha na loja.</span>
+	</div>
+	</div>
+	</div>
+
+	<div role="tabpanel" class="tab-pane" id="pagamento">
+	<div class="form-group">
+	<div class="col-sm-12">
+	<div class="alert alert-info" role="alert">Para adicionar icones ao meios de pagamento no checkout basta os selecionar o correspondente a cada m&eacute;todo da forma que desejar.</div>
+	</div>
+	</div>
+	<div class="form-group">
+	<div class="col-sm-12">
+	<table class="table table-bordered">
+	<thead>
+	<tr>
+	<th width="30%">M&eacute;todo</th>
+	<th>Icone</th>
+	</tr>
+	</thead>
+		  
+	
+	{% for k,v in meios %}
+	
+	<tr>
+		<td>{{ v }}</td>
+		<td id="image-row{{ k }}">
+		{% if (module_compraexpress_pagamentos[k] is empty) %} 
+			<a href="" id="thumb-image{{ k }}" data-toggle="image" class="img-thumbnail">
+				<img width="100" data-placeholder="../image/placeholder.png" src="../image/placeholder.png"/>
+			</a>
+		{% else %} 
+			<a href="" id="thumb-image{{ k }}" data-toggle="image" class="img-thumbnail">
+				<img width="100" data-placeholder="{{ constant('HTTPS_CATALOG') }}image/{{ module_compraexpress_pagamentos[k] is defined?module_compraexpress_pagamentos[k]:'' }}" src="{{ constant('HTTPS_CATALOG') }}image/{{ module_compraexpress_pagamentos[k] is defined?module_compraexpress_pagamentos[k]:'' }}"/>
+			</a>
+		{% endif %} 
+		<input id="input-image{{ k }}" type="hidden" name="module_compraexpress_pagamentos[{{ k }}]" value="{{ module_compraexpress_pagamentos[k] is defined?module_compraexpress_pagamentos[k]:'' }}" />
+		</td>
+	</tr>
+	{% endfor %} 
+
+	</table>
+	</div>
+	</div>
+	</div>
+
+</div>
+</div>
+
+</form>
+
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+<!-- 
+$('.html_ok').summernote({
+	height: 150,
+	codemirror: { // codemirror options
+		theme: 'monokai'
+	}
+});
+//-->
+</script>
+{{ footer }}

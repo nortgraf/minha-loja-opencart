@@ -1,0 +1,14 @@
+<style>
+.emnav-tabs li a{
+	cursor:pointer !important;
+}
+</style>
+<ul class="nav nav-tabs emnav-tabs">
+	<li {% if route == 'emticket/setting' %} class="active" {% endif %}><a href="{{ setting }}" ><i class="fa fa-cog" aria-hidden="true"></i> {{ text_setting }}</a></li>
+	<li {% if route  == 'emticket/tickets' or route == 'emticket/emticke' %} class="active" {% endif %}><a href="{{ tickets }}" > {{ text_tickets }}</a></li>
+	<li {% if route == 'emticket/emprior' %} class="active" {% endif %}><a href="{{ priority }}" > {{ text_priority }}</a></li>
+	<li {% if route  == 'emticket/emstatu' %} class="active" {% endif %}><a href="{{ ticket_status }}" > {{ text_ticket_status }}</a></li>
+	<li {% if route  == 'emticket/emdepar' %} class="active" {% endif %}><a href="{{ department }}" > {{ text_department }}</a></li>
+	<li {% if route  == 'emticket/knowled' %} class="active" {% endif %}><a href="{{ section }}" > {{ text_knowledge_section }}</a></li>
+	<li {% if route  == 'emticket/article' %} class="active" {% endif %}><a href="{{ article }}" > {{ text_knowledge_article }}</a></li>
+</ul>

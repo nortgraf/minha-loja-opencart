@@ -1,0 +1,406 @@
+{{ header }}
+{{ column_left }}
+    <div id="content">
+        <div class="page-header">
+            <div class="container-fluid">
+            <div class="pull-right">
+              <button type="submit" form="form-module" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+              <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a>
+            </div>
+                <h1>{{ heading_title }}</h1>
+                <ul class="breadcrumb">
+                    {% for breadcrumb in breadcrumbs %}
+                        <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+                        {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="container-fluid">
+            {% if success %}
+                <div class="alert alert-success alert-dismissible"><i class="fa fa-check-circle"></i> {{ success }}
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                </div>
+            {% endif %}
+
+            {% if error %}
+                <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error }}
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                </div>
+            {% endif %}
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title" id="panel_page_heading"><i class="fa fa-gear"></i> {{ lang_array.text_settings_heading }}</h3>
+                </div>
+
+                <div class="panel-body">
+                    <div>
+                        <ul class="nav nav-tabs">
+                            <li class="{{ current_active_settings ? 'active': '' }}">
+                                <a href="#tab-settings" data-toggle="tab" onclick="change_header_title(1)">
+                                    {{ lang_array.text_settings }}
+                                </a>
+                            </li>
+
+                            <li class="{{ current_active_faq ? current_active_faq : '' }}">
+                                <a href="#tab-faqs" data-toggle="tab" onclick="change_header_title(6)">
+                                    {{ lang_array.text_faqs }}
+                                </a>
+                            </li>
+
+                            <!--li class="{{ current_active_support ? current_active_support : '' }}">
+                                <a href="#tab-support" data-toggle="tab" onclick="change_header_title(7)">
+                                    {{ lang_array.text_support }}
+                                </a-->
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="tab-content">
+                        <!-- Tab1: Global Settings -->
+                        <div class="tab-pane {{ current_active_settings  ? current_active_settings : '' }}" id="tab-settings">
+                            <h4 style="font-weight: bold">Admin Configurations</h4>
+                            <table>
+                                {% for admin_config in get_admin_config %}
+                                    <tr>
+                                        {% if admin_config.value %}
+                                            <td>{{ admin_config.name }}</td>
+                                            <td>{{ admin_config.value }}</td>
+                                        {% else %}
+                                            <td colspan="2" style="padding: 14px;">{{ admin_config.name }}</td>
+                                        {% endif %}
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+
+                        <!-- Tab6: FAQ -->
+                        <div class="tab-pane {{ current_active_faq  ? 'active' : '' }}" id="tab-faqs">
+                            <div class="panel-group phpinfo" id="accordion" role="tablist" aria-multiselectable="true">
+                                {{ phpinfo }}
+                            </div>
+                        </div>
+
+                        <!-- Tab7: Support -->
+                        <div class="tab-pane {{ current_active_support  ? 'active' : '' }}" id="tab-support">
+                            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                <div class="faq">
+                                    <div class="faq-body">
+                                        <div class="container-fluid">
+                                            <div class="row faq-body-row">
+                                                <div class="col-md-6">
+                                                    <div class="faq-body-caption faq-body-caption-left faq-shadow-sm">
+                                                       <div class="faq-caption-inner text-center">
+                                                        <svg height="100pt" viewBox="0 0 512 512" width="100pt" xmlns="http://www.w3.org/2000/svg"><path d="m467 211h-16v-15c0-108.074219-87.476562-196-195-196s-195 87.925781-195 196v15h-16c-24.8125 0-45 20.1875-45 45v90c0 24.8125 20.1875 45 45 45h18.578125c6.195313 17.460938 22.867187 30 42.421875 30 24.8125 0 45-20.1875 45-45v-150c0-24.8125-20.1875-45-45-45-5.085938 0-9.96875.859375-14.527344 2.421875 6.410156-85.679687 77.753906-153.421875 164.527344-153.421875s158.117188 67.742188 164.527344 153.421875c-4.558594-1.5625-9.441406-2.421875-14.527344-2.421875-24.8125 0-45 20.1875-45 45v150c0 24.8125 20.1875 45 45 45 5.257812 0 10.304688-.914062 15-2.578125v18.578125c0 8.269531-6.730469 15-15 15h-107.578125c-6.195313-17.460938-22.867187-30-42.421875-30-24.8125 0-45 20.1875-45 45s20.1875 45 45 45c19.554688 0 36.226562-12.539062 42.421875-30h107.578125c24.8125 0 45-20.1875 45-45v-46h16c24.8125 0 45-20.1875 45-45v-90c0-24.8125-20.1875-45-45-45zm-437 135v-90c0-8.269531 6.730469-15 15-15h16v120h-16c-8.269531 0-15-6.730469-15-15zm76-135c8.269531 0 15 6.730469 15 15v150c0 8.269531-6.730469 15-15 15s-15-6.730469-15-15v-150c0-8.269531 6.730469-15 15-15zm150 271c-8.269531 0-15-6.730469-15-15s6.730469-15 15-15 15 6.730469 15 15-6.730469 15-15 15zm150-91c-8.269531 0-15-6.730469-15-15v-150c0-8.269531 6.730469-15 15-15s15 6.730469 15 15v150c0 8.269531-6.730469 15-15 15zm76-45c0 8.269531-6.730469 15-15 15h-16v-120h16c8.269531 0 15 6.730469 15 15zm0 0"/></svg>
+                                                            <h1 class="font-23 fmy-5"><i class="fa fa-thumbs-up" aria-hidden="true"></i> {{lang_array.support_heading}}</h1>
+                                                            <p class="font-17 light-dark fm-0">{{lang_array.support_description}}</p>
+                                                       </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="faq-body-caption">
+                                                        <strong>{{lang_array.how_to_contact_us_1}}</strong>
+                                                        <ul class="pt-10">
+                                                            <li>{{lang_array.how_to_contact_us_2}}</li>
+                                                            <li>{{lang_array.how_to_contact_us_3}}<br /><br /><a href="http://echoit-solutions.com/contact-us/" target="_blank">http://echoit-solutions.com/contact-us/</a></li>
+                                                            <li>{{lang_array.how_to_contact_us_4}}</li>
+                                                            <li>{{lang_array.how_to_contact_us_5}}</li>
+                                                        </ul>
+                                                        <div class="pt-10">
+                                                           <strong>{{still_having_trouble}}</strong>
+                                                           <div class="fmt-5"><span class="text-blue-bold">{{see_faq_section}}</span></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{{ footer }}
+
+<script>
+    var spreadsheet_js_array = [];
+    {% for spreadsheet_data in download_spreadsheet %}
+        spreadsheet_js_array[{{spreadsheet_data.flag}}] = [{{spreadsheet_data.data}}];
+    {% endfor %}
+</script>
+
+<script>
+            function deleteAbandonedCart(url) {
+                if (confirm("Are you sure?"))
+                    window.location.href = url;
+            }
+
+    function open_template_preview_popup(id) {
+        $('#preview_template_' + id).modal('show');
+    }
+
+    function openInfoPopup(id) {
+        $('#' + id).modal('show');
+    }
+
+    function open_cron_url_model(id) {
+        $('#cron_url_model_' + id).modal('show');
+    }
+
+    $('.date').datetimepicker({
+        language: '{{ datepicker }}',
+        pickTime: false
+    });
+
+    $('#button-reset').on('click', function () {
+        location = 'index.php?route=extension/extension/eisabandonedcarts&user_token={{ user_token }}&abandoned_cart';
+    });
+
+    $('#button-filter').on('click', function () {
+        var url = '';
+        var filter_customer_name = $('input[name=\'filter_customer_name\']').val();
+        if (filter_customer_name)
+            url += '&customer_name=' + encodeURIComponent(filter_customer_name);
+
+        var filter_customer_email = $('input[name=\'filter_customer_email\']').val();
+        if (filter_customer_email)
+            url += '&customer_email=' + encodeURIComponent(filter_customer_email);
+
+        var input_customer_type = $("#input-customer-type option:selected").val();
+        if (input_customer_type)
+            url += '&customer_type=' + encodeURIComponent(input_customer_type);
+
+        var input_status = $("#input_status option:selected").val();
+        if (input_status)
+            url += '&filter_status=' + encodeURIComponent(input_status);
+
+        var filter_date_start = $('input[name=\'filter_date_start\']').val();
+        if (filter_date_start)
+            url += '&filter_start=' + encodeURIComponent(filter_date_start);
+
+        var filter_date_end = $('input[name=\'filter_date_end\']').val();
+        if (filter_date_end)
+            url += '&filter_end=' + encodeURIComponent(filter_date_end);
+
+        location = 'index.php?route=extension/extension/eisabandonedcarts&user_token={{ user_token }}&abandoned_cart' + url;
+    });
+
+    function downloadAllSpreadsheet() {
+        var tabularData = [];
+
+        var options = {
+            fileName: "Abandoned carts"
+        };
+
+        tabularData[0] = {
+            "sheetName": "Abandoned cart info",
+            "data": [{{default_spreadsheet_data.abandoned_cart}}]
+        }
+
+        for (var flag = 1; flag < spreadsheet_js_array.length; flag++) {
+            tabularData[flag] = {
+                "sheetName": "Cart - " + flag,
+                "data": spreadsheet_js_array[flag]
+            }
+        }
+
+        Jhxlsx.export(tabularData, options);
+    }
+
+    function downloadSpreadsheet(id, session_id) {
+        var options = {
+            fileName: session_id
+        };
+
+        var tabularData = [{
+                "sheetName": "Sheet1",
+                "data": spreadsheet_js_array[id]
+            }];
+
+        Jhxlsx.export(tabularData, options);
+    }
+
+    function removeItem(id) {
+        var url = 'index.php?route=extension/extension/eisabandonedcarts/remove&user_token={{user_token}}';
+
+        $.ajax({
+            type: 'post',
+            url: url,
+            dataType: 'json',
+            data: {id: id},
+            success: function (data) {
+                window.location.href = data['redirect'].replace('&amp;', '&').replace('&amp;', '&');
+            },
+            error: function (error) {
+                console.log("error", error);
+            }
+        });
+    }
+
+    function zoomIn(id) {
+        $('#hover_image' + id).css('top', $('#main_img' + id).offset().top - 50);
+        $('#hover_image' + id).fadeIn('slow');
+    }
+
+    function zoomOut(id) {
+        $('#hover_image' + id).fadeOut('slow');
+    }
+
+    // Create chart instance in one go
+    am4core.options.commercialLicense = true;
+    var chart = am4core.createFromConfig({
+        // Create pie series
+        "series": [{
+                "type": "PieSeries",
+                "dataFields": {
+                    "value": "user_type",
+                    "category": "user"
+                }
+            }],
+        // Add data
+        "data": [{
+                "user": "Guest Customer",
+                "user_type": 5
+            }, {
+                "user": "Registered member",
+                "user_type": 10
+            }],
+        // And, for a good measure, let's add a legend
+        "legend": {}
+    }, "eitspie", am4charts.PieChart);
+    // Line Chart
+    am4core.ready(function () {
+        // Themes begin
+        am4core.useTheme(am4themes_animated);
+        // Themes end
+        var chart = am4core.create("eitsline", am4charts.XYChart);
+        var today = new Date();
+        var d = String(today.getDate()).padStart(1, '0');
+        var data = [];
+        var value = 50;
+        for (let i = 1; i < d; i++) {
+            let date = new Date();
+            date.setHours(0, 0, 0, 0);
+            date.setDate(i);
+            //alert(date.setDate(i));
+            data.push({date: date, value: value});
+        }
+        console.log(data);
+        chart.data = data;
+        // Create axes
+        var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
+        dateAxis.renderer.minGridDistance = 30;
+        var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+        // Create series
+        var series = chart.series.push(new am4charts.LineSeries());
+        series.dataFields.valueY = "value";
+        series.dataFields.dateX = "date";
+        series.tooltipText = "{value}"
+        series.tooltip.pointerOrientation = "vertical";
+        chart.cursor = new am4charts.XYCursor();
+        chart.cursor.snapToSeries = series;
+        chart.cursor.xAxis = dateAxis;
+        //chart.scrollbarY = new am4core.Scrollbar();
+        chart.scrollbarX = new am4core.Scrollbar();
+    });
+
+    function change_header_title(id) {
+    {#<h3 class="panel-title" id="panel_page_heading"><i class="fa fa-gear"></i> {{ text_settings_heading }}</h3>#}
+            if (id == 1) {
+                $("#abandoned_cart_header_menu_global").show();
+                $("#abandoned_cart_header_menu_abandoned-carts").hide();
+                $("#abandoned_cart_header_menu_email_templates").hide();
+                $("#abandoned_cart_header_menu_email_notifications").hide();
+                $("#panel_page_heading").html('<i class="fa fa-gear"></i> {{ text_settings_heading }}');
+            } else if (id == 6) {
+                $("#abandoned_cart_header_menu_global").hide();
+                $("#abandoned_cart_header_menu_abandoned-carts").hide();
+                $("#abandoned_cart_header_menu_email_templates").hide();
+                $("#abandoned_cart_header_menu_email_notifications").hide();
+                $("#panel_page_heading").html('<i class="fa fa-question"></i> {{ lang_array.text_faqs }}');
+            } else if (id == 7) {
+                $("#abandoned_cart_header_menu_global").hide();
+                $("#abandoned_cart_header_menu_abandoned-carts").hide();
+                $("#abandoned_cart_header_menu_email_templates").hide();
+                $("#abandoned_cart_header_menu_email_notifications").hide();
+                $("#panel_page_heading").html('<i class="fa fa-users"></i> {{ lang_array.text_support }}');
+            }
+        }
+
+        $(window).load(function () {
+            change_header_title({{ default_tab_id }});
+        });
+</script>
+
+<script>
+    function setDefaultCountry(iso_2, title, image) {
+        $(".default-country-title").html(title);
+        if( iso_2 ) {
+            $("#default-country-image").show();
+            $("#default-country-image").attr("src", image);
+        }else {
+            $("#default-country-image").hide();
+        }
+        
+        $('#eitsmadeincountry_country_code').val(iso_2);
+    }
+    
+    $('#language a:first').tab('show');
+</script>
+
+<style>
+    .language-select:hover{
+        background-color: #197bb0;
+        text-decoration: none;
+        color: #ffffff;
+    }
+    
+    .default-country-title:hover {
+        text-decoration: none !important;
+    }
+    
+    .default-country-buttons:hover {
+        text-decoration: none !important;
+    }
+</style>
+
+<style>
+    .phpinfo pre {margin: 0; font-family: monospace;}
+    .phpinfo a:link {color: #009; text-decoration: none; background-color: #fff;}
+    .phpinfo a:hover {text-decoration: underline;}
+    .phpinfo table {border-collapse: collapse; border: 0; width: 934px; box-shadow: 1px 2px 3px #ccc;}
+    .phpinfo .center {text-align: center;}
+    .phpinfo .center table {margin: 1em auto; text-align: left;}
+    .phpinfo .center th {text-align: center !important;}
+    .phpinfo td, th {border: 1px solid #666; font-size: 75%; vertical-align: baseline; padding: 4px 5px;}
+    .phpinfo h1 {font-size: 150%;}
+    .phpinfo h2 {font-size: 125%;}
+    .phpinfo .p {text-align: left;}
+    .phpinfo .e {background-color: #ccf; width: 300px; font-weight: bold;}
+    .phpinfo .h {background-color: #99c; font-weight: bold;}
+    .phpinfo .v {background-color: #ddd; max-width: 300px; overflow-x: auto; word-wrap: break-word;}
+    .phpinfo .v i {color: #999;}
+    .phpinfo img {float: right; border: 0;}
+    .phpinfo hr {width: 934px; background-color: #ccc; border: 0; height: 1px;}
+</style>
+
+<style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+</style>

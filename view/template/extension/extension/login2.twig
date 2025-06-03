@@ -1,0 +1,45 @@
+{{ header }}
+  <style type="text/css" media="screen">
+    body{margin:0;color:#6a6f8c;background:#c8c8c8;font:600 16px/18px 'Open Sans',sans-serif}header#header{display:none!important}*,:after,:before{box-sizing:border-box}.clearfix:after,.clearfix:before{content:'';display:table}.clearfix:after{clear:both;display:block}a{color:inherit;text-decoration:none}.login-wrap{width:100%;margin:auto;max-width:525px;min-height:670px;position:relative;background:url(view/image/bg-login.jpg) no-repeat center;box-shadow:0 12px 15px 0 rgba(0,0,0,.24),0 17px 50px 0 rgba(0,0,0,.19)}.login-html{width:100%;height:100%;position:absolute;padding:90px 70px 50px;background:rgba(40,57,101,.9)}.login-html .tab,.login-form .group .label,.login-form .group .button{text-transform:uppercase}.login-html .tab{font-size:22px;padding-bottom:5px;margin:0 15px 10px 0;display:inline-block;border-bottom:2px solid transparent;color:#fff}.login-form{min-height:300px;position:relative;-webkit-perspective:1000px;perspective:1000px;-webkit-transform-style:preserve-3d;transform-style:preserve-3d}.login-form .group{margin-bottom:15px}.login-form .group .label,.login-form .group .input,.login-form .group .button{width:100%;color:#fff;display:block}.login-form .group .input,.login-form .group .button{border:none;padding:15px 20px;border-radius:25px;background:rgba(255,255,255,.1)}.login-form .group input[data-type="password"]{text-security:circle;-webkit-text-security:circle}.login-form .group .button{background:#1161ee}footer#footer{font-size:12px}    
+  </style>
+  <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans:600'>
+      <div class="login-wrap">
+        <div class="login-html">
+          
+            <label for="tab-1" class="tab">{{ text_login }}</label>
+          
+          <div class="login-form">
+            <div class="sign-in-htm">
+            {% if success %}
+            <div class="alert alert-success alert-dismissible"><i class="fa fa-check-circle"></i> {{ success }}
+              <button type="button" class="close" data-dismiss="alert">&times;</button>
+            </div>
+            {% endif %}
+            {% if error_warning %}
+            <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+              <button type="button" class="close" data-dismiss="alert">&times;</button>
+            </div>
+            {% endif %}
+            <form action="{{ action }}" method="post" enctype="multipart/form-data">
+              <div class="group">
+                <label for="input-username">{{ entry_username }}</label>                
+                  <input type="text" name="username" value="{{ username }}" placeholder="{{ entry_username }}" id="input-username" class="input" />                
+              </div>
+              <div class="group">
+                <label for="input-password">{{ entry_password }}</label>                
+                  <input type="password" name="password" value="{{ password }}" placeholder="{{ entry_password }}" id="input-password" class="input" />                
+                {% if forgotten %}
+                <span class="help-block"><a href="{{ forgotten }}">{{ text_forgotten }}</a></span>
+                {% endif %}
+              </div>
+              <div class="group">
+                <button type="submit" class="button"><i class="fa fa-key"></i> {{ button_login }}</button>
+              </div>
+              {% if redirect %}
+              <input type="hidden" name="redirect" value="{{ redirect }}" />
+              {% endif %}
+            </form>
+          </div>
+          </div>{{ footer }}
+        </div>
+</div>
